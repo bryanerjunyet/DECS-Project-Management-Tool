@@ -75,6 +75,7 @@ header {
     padding: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
+    cursor: pointer;
 }
 
 .task-card img {
@@ -93,4 +94,55 @@ header {
     padding: 5px;
     border-radius: 5px;
     font-size: 10px;
+}
+
+.task-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.task-details .field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.task-details .field input,
+.task-details .field textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.task-details .field select {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.save-task {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.task-stage,
+.task-status {
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.task-stage.active {
+    background-color: #333;
+}
+
+.task-status.active {
+    background-color: #f90;
 }
