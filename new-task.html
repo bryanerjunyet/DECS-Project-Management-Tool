@@ -4,9 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Task</title>
-    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Include Choices.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    
+    <style>
+        /* Overall page styles */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar nav ul li {
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .sidebar button.logout {
+            background-color: #f00;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .save-task {
+            background-color: #ff0000;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Style for the range slider */
+        input[type="range"] {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Style for the Type of Task radio buttons */
+        .type-of-task {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Adds space between the radio buttons */
+        }
+
+        /* Style for Priority tags */
+        .priority {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #fff;
+            margin-right: 5px;
+        }
+
+        .priority.low {
+            background-color: #00b050; /* Green */
+        }
+
+        .priority.medium {
+            background-color: #00b0f0; /* Blue */
+        }
+
+        .priority.high {
+            background-color: #ffc000; /* Orange */
+        }
+
+        .priority.urgent {
+            background-color: #ff0000; /* Red */
+        }
+
+    </style>
 </head>
 <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">DECS Co.</div>
+        <nav>
+            <ul>
+                <li>Sprint Board</li>
+                <li>Product Backlog</li>
+                <li>Kanban Board</li>
+                <li>Team Board</li>
+            </ul>
+        </nav>
+        <button class="logout">Log out</button>
+    </div>
+
+    <!-- Main Content -->
     <div class="content">
         <header>
             <h1>Create New Task</h1>
@@ -19,6 +170,7 @@
                 </div>
                 <div class="field">
                     <label for="tag">Tags:</label>
+                    <!-- Standard Select Dropdown -->
                     <select id="tag" multiple>
                         <option value="Frontend">Frontend</option>
                         <option value="UI/UX">UI/UX</option>
@@ -35,16 +187,77 @@
                 <div class="field">
                     <label for="priority">Priority:</label>
                     <select id="priority">
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                        <option value="urgent">Urgent</option>
+                        <option class="priority low" value="low">Low</option>
+                        <option class="priority medium" value="medium">Medium</option>
+                        <option class="priority high" value="high">High</option>
+                        <option class="priority urgent" value="urgent">Urgent</option>
+                    </select>
+                </div>
+
+                <!-- Story Point - Range Slider with Labels -->
+                <div class="field">
+                    <label for="storyPoint">Story Point:</label>
+                    <input type="range" id="storyPoint" name="storyPoint" min="1" max="10" value="1">
+                    <div class="slider-labels">
+                        <span>1</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span>4</span>
+                        <span>5</span>
+                        <span>6</span>
+                        <span>7</span>
+                        <span>8</span>
+                        <span>9</span>
+                        <span>10</span>
+                    </div>
+                </div>
+
+                <!-- Type of Task Selection Side by Side -->
+                <div class="field">
+                    <label for="typeOfTask">Type of Task:</label>
+                    <div id="typeOfTask" class="type-of-task">
+                        <label><input type="radio" name="typeOfTask" value="Story" required> Story</label>
+                        <label><input type="radio" name="typeOfTask" value="Bug" required> Bug</label>
+                    </div>
+                </div>
+
+                <!-- Stage of Task Dropdown -->
+                <div class="field">
+                    <label for="stageOfTask">Stage of Task:</label>
+                    <select id="stageOfTask">
+                        <option value="planning">Planning</option>
+                        <option value="development">Development</option>
+                        <option value="testing">Testing</option>
+                        <option value="integration">Integration</option>
+                    </select>
+                </div>
+
+                <!-- Task Status Dropdown -->
+                <div class="field">
+                    <label for="taskStatus">Task Status:</label>
+                    <select id="taskStatus">
+                        <option value="todo">To Do</option>
+                        <option value="inprogress">In Progress</option>
+                        <option value="completed">Completed</option>
                     </select>
                 </div>
             </div>
             <button class="save-task" type="submit">Save Task</button>
         </form>
-    </div>
-    <script src="script.js"></script>
+    
+    <!-- Include Choices.js JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <script>
+        // Initialize Choices.js on the select element
+        document.addEventListener('DOMContentLoaded', function() {
+            const choices = new Choices('#tag', {
+                removeItemButton: true,
+                maxItemCount: 5,
+                searchResultLimit: 5,
+                renderChoiceLimit: -1
+            });
+        });
+    </script>
 </body>
 </html>

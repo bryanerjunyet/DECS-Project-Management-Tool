@@ -86,3 +86,13 @@ document.querySelector('#taskForm').addEventListener('submit', function (event) 
 
     saveTask(newTask);
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const choices = new Choices('#tag', {
+        removeItemButton: true, // Allows removing selected items
+        maxItemCount: 5,        // Limits the maximum number of selections (if needed)
+        searchResultLimit: 5,   // Limits the number of search results
+        renderChoiceLimit: -1   // Render all choices by default
+    });
+});
