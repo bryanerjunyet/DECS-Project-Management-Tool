@@ -161,4 +161,4 @@
   .task-card.low .priority { background-color: #2ecc40; color: white; }
   .task-card.medium .priority { background-color: #ffdc00; color: black; }
   .task-card.high .priority { background-color: #ff851b; color: white; }
-  .task-card.urgent .priority { background-color: #ff4136; color: white; }
+  .task-card.urgent .priority { background-color: #ff4136;color:white; } 
