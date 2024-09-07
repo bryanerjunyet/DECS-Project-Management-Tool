@@ -34,4 +34,131 @@
     cursor: pointer;
   }
   
+  .task-details {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
   
+  .task-details input[type="text"],
+  .task-details textarea,
+  .task-details select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .task-details textarea {
+    height: 100px;
+  }
+  
+  .tags-container {
+    margin-bottom: 10px;
+  }
+  
+  .tag {
+    display: inline-block;
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+  }
+  
+  .tag button {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+  }
+  
+  .tag-buttons button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .stage-button,
+  .status-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .stage-button {
+    background-color: #333;
+    color: white;
+  }
+  
+  .status-button.started { background-color: #ff4136; color: white; }
+  .status-button.in-progress { background-color: #ffdc00; color: black; }
+  .status-button.completed { background-color: #2ecc40; color: white; }
+  
+  .story-points {
+    margin-bottom: 10px;
+  }
+  
+  .story-points input[type="range"] {
+    width: 100%;
+  }
+  
+  .type-of-task {
+    margin-bottom: 10px;
+  }
+  
+  .type-of-task label {
+    margin-right: 20px;
+  }
+  
+  .history-button,
+  .save-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .history-button {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  .save-button {
+    background-color: #ff4136;
+    color: white;
+  }
+  
+  .task-card {
+    position: relative;
+  }
+  
+  .task-card .priority {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .task-card.low .priority { background-color: #2ecc40; color: white; }
+  .task-card.medium .priority { background-color: #ffdc00; color: black; }
+  .task-card.high .priority { background-color: #ff851b; color: white; }
+  .task-card.urgent .priority { background-color: #ff4136; color: white; }
