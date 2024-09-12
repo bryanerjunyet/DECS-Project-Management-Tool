@@ -1,0 +1,11 @@
+body {
+    display: flex;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.main-content {
+    width: 80%;
+    padding: 20px;
+    background-color: #f0f0f0;
+}

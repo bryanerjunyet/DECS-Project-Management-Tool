@@ -1,0 +1,14 @@
+header {
+    background-color: #000000;
+    color: #fff;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 20px;
+    padding: 15px;
+    margin-bottom: 0px;
+    display: flex; /* Aligns items in a row */
+    justify-content: space-between; /* Aligns items to the sides */
+    align-items: center;
+    width: calc(100% + 10px); /* Adjust to fill the content width */
+    margin-left: -20px; /* Align header with the content edges */
+    margin-top: -20px;
+}
