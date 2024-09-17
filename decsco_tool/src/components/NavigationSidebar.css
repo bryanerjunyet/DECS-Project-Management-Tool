@@ -1,11 +1,12 @@
+/* NavigationSidebar.css */
 .navigation_sidebar {
     width: 20%;
     background-color: #333;
     color: #fff;
     padding: 20px;
-    height: 100%;
+    height: 100vh; /* Full viewport height */
     position: fixed;
-    top: 0;
+    top: 60px; /* Position below the header */
     left: 0;
     display: flex;
     flex-direction: column;
@@ -13,7 +14,7 @@
 }
 
 .navigation_sidebar h2 {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .navigation_sidebar nav ul {
@@ -22,14 +23,26 @@
 }
 
 .navigation_sidebar nav ul li {
-    margin: 16px 0;
+    margin: 20px 0;
     cursor: pointer;
-    font-size: 25px;
+    font-size: 30px;
 }
 
-.navigation_sidebar nav ul li.active {
+.navigation_sidebar nav ul li .nav-link {
+    text-decoration: none; /* Remove the default underline */
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.navigation_sidebar nav ul li .nav-link:hover {
     font-weight: bold;
     color: #ffcc00;
+}
+
+.navigation_sidebar nav ul li .nav-link.active {
+    font-weight: bold;
+    color: #ff0000;
 }
 
 .navigation_sidebar button.logout {
@@ -41,7 +54,6 @@
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 20px;
     margin-bottom: 40px;
 }
 
@@ -50,12 +62,12 @@
     align-items: center;
 }
 .logo img {
-    width: 25%;
+    width: 28%;
     height: auto;
     margin-right: 10px;
 }
 .logo-text {
     font-family: 'Times New Roman', Times, serif;
     font-weight: bold;
-    font-size: 3vw;
+    font-size: 50px;
 }

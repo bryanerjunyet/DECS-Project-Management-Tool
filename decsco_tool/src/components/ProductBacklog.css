@@ -1,11 +1,46 @@
-body {
-    display: flex;
-    margin: 0;
-    font-family: Arial, sans-serif;
+
+
+.page-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color: #000000;
+color: #fff;
+font-family: Verdana, Geneva, Tahoma, sans-serif;
+font-size: 20px;
+padding: 15px;
 }
 
-.main-content {
-    width: 80%;
-    padding: 20px;
-    background-color: #f0f0f0;
+.new-task {
+background-color: #ff0000;
+color: white;
+padding: 15px 30px; /* Adjust the padding as needed */
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 20px;
+font-weight: bold;
+text-align: center;
+margin-left: -20px; /* Adjust the value as needed */
+}
+
+.controls {
+display: flex;
+justify-content: flex-end;
+margin-bottom: 20px;
+}
+
+.filter-button, .sort-button {
+cursor: pointer;
+margin-left: 10px;
+}
+
+.task-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+gap: 20px;
+}
+
+.filter-options, .sort-options {
+margin-bottom: 20px;
 }
