@@ -2,9 +2,12 @@
 import React from 'react';
 import './TaskCardView.css';
 
-const TaskCardView = ({ task }) => {
+const TaskCardView = ({ task, onClick }) => {
   return (
-    <div className={`task-card ${task.priority.toLowerCase()}`}>
+    <div 
+      className={`task-card ${task.priority.toLowerCase()}`} 
+      onClick={() => onClick(task)}
+    >
       <div className="priority-tag">
         <span className="tag">{task.priority.toUpperCase()}</span>
       </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TaskCardView from './TaskCardView';
 import TaskCardForm from './TaskCardForm';
+import TaskCardDetails from './TaskCardDetails';
 import './ProductBacklog.css';
 
 const ProductBacklog = () => {
@@ -8,6 +9,7 @@ const ProductBacklog = () => {
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const [showFilterOptions, setShowFilterOptions] = useState(false);
   const [showSortOptions, setShowSortOptions] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   useEffect(() => {
     loadTasks();
@@ -15,6 +17,7 @@ const ProductBacklog = () => {
 
   const loadTasks = () => {
     const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    console.log(storedTasks);
     setTasks(storedTasks);
   };
 
@@ -24,6 +27,30 @@ const ProductBacklog = () => {
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
     setShowNewTaskForm(false);
   };
+
+
+  const openTaskDetails = (task) => {
+    console.log(task);
+    setSelectedTask(task);
+  };
+
+  const saveTaskDetails = (updatedTask) => {
+    const updatedTasks = tasks.map(t => t.id === updatedTask.id ? updatedTask : t);
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    setSelectedTask(null);
+  };
+
+  const deleteTask = (taskId) => {
+    const updatedTasks = tasks.filter(t => t.id !== taskId);
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    setSelectedTask(null);
+  };
+
+  const closeTaskDetails = () => {
+    setSelectedTask(null);
+  };  
 
   return (
     <div className="product-backlog">
@@ -61,12 +88,21 @@ const ProductBacklog = () => {
 
       <section className="task-board">
         {tasks.map(task => (
-          <TaskCardView key={task.id} task={task} />
+          <TaskCardView key={task.id} task={task} onClick={() => openTaskDetails(task)}/>
         ))}
       </section>
 
       {showNewTaskForm && (
         <TaskCardForm onSubmit={addNewTask} onCancel={() => setShowNewTaskForm(false)} />
+      )}
+
+      {selectedTask && (
+        <TaskCardDetails
+          task={selectedTask}
+          onSave={saveTaskDetails}
+          onDelete={deleteTask}
+          onClose={closeTaskDetails}
+        />
       )}
     </div>
   );
