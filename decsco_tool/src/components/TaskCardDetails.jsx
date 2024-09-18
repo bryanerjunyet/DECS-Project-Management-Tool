@@ -6,62 +6,83 @@ import './TaskCardDetails.css';
 const TaskCardDetails = ({ task, onSave, onDelete, onClose }) => {
   const [editedTask, setEditedTask] = useState(task);
   const tagsRef = useRef(null); // Reference for the tags select element
-  const choicesInstance = useRef(null); // Store the Choices.js instance
 
-  // Handle the task changes and update local state
   useEffect(() => {
     setEditedTask(task);
 
-    // Initialize Choices.js on the tags select element
     if (tagsRef.current) {
-      if (choicesInstance.current) {
-        choicesInstance.current.destroy(); // Destroy existing instance before creating a new one
-      }
-
-      // Initialize Choices.js
-      choicesInstance.current = new Choices(tagsRef.current, {
-        removeItemButton: true,
-        duplicateItemsAllowed: false,
-        searchEnabled: true,
-        shouldSort: false,
-        placeholderValue: 'Select tags',
-        maxItemCount: -1,
+      const choices = new Choices(tagsRef.current, {
+        removeItemButton: true, // Allows removing tags
+        duplicateItemsAllowed: false, // No duplicate tags
+        searchEnabled: true, // Enable searching for tags
+        shouldSort: false, // Do not sort tags
+        placeholderValue: 'Select tags', // Placeholder for the dropdown
+        maxItemCount: -1, // Allow selecting unlimited tags
       });
 
-      // Pre-populate selected tags
+      // Pre-select tags in Choices.js when task is loaded
       if (task.tags && task.tags.length > 0) {
-        choicesInstance.current.setChoices(
-          task.tags.map(tag => ({ value: tag, label: tag, selected: true })),
-          'value',
-          'label',
-          false
-        );
+        choices.setChoices(task.tags.map(tag => ({ value: tag, label: tag, selected: true })), 'value', 'label', false);
       }
 
-      // Handle changes in the Choices.js select and update React state
+      // Sync Choices.js with React state
       tagsRef.current.addEventListener('change', function () {
-        const selectedTags = choicesInstance.current.getValue(true); // Get selected tags as an array
+        const selectedTags = choices.getValue(true); // Get selected tags as array of values
         setEditedTask(prevTask => ({ ...prevTask, tags: selectedTags }));
       });
+
+      // Cleanup on component unmount
+      return () => {
+        choices.destroy();
+      };
     }
+  }, [task]);
 
-    // Cleanup when component unmounts or task changes
-    return () => {
-      if (choicesInstance.current) {
-        choicesInstance.current.destroy();
-      }
-    };
-  }, [task]); // Only re-run the effect when the task prop changes
-
-  const handleChange = e => {
+  // Handle changes for other fields
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setEditedTask(prevTask => ({ ...prevTask, [name]: value }));
   };
 
-  const handleSubmit = e => {
+  // Handle the form submission and save task
+  const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(editedTask); // Save the updated task
+    onSave(editedTask);
   };
+
+  // Dynamic class changes for priority, task status, and person in charge
+  useEffect(() => {
+    const prioritySelect = document.getElementById('priority');
+    const statusSelect = document.getElementById('taskStatus');
+    const personSelect = document.getElementById('personInCharge');
+
+    // Apply class for priority based on selection
+    if (prioritySelect) {
+      prioritySelect.addEventListener('change', () => {
+        prioritySelect.className = ''; // Reset class
+        prioritySelect.classList.add(`priority-${prioritySelect.value.toLowerCase()}`);
+      });
+      prioritySelect.dispatchEvent(new Event('change')); // Trigger initial styling
+    }
+
+    // Apply class for task status based on selection
+    if (statusSelect) {
+      statusSelect.addEventListener('change', () => {
+        statusSelect.className = ''; // Reset class
+        statusSelect.classList.add(`status-${statusSelect.value.toLowerCase().replace(' ', '')}`);
+      });
+      statusSelect.dispatchEvent(new Event('change')); // Trigger initial styling
+    }
+
+    // Apply class for person in charge based on selection
+    if (personSelect) {
+      personSelect.addEventListener('change', () => {
+        personSelect.className = ''; // Reset class
+        personSelect.classList.add(`person-${personSelect.value.toLowerCase()}`);
+      });
+      personSelect.dispatchEvent(new Event('change')); // Trigger initial styling
+    }
+  }, []);
 
   return (
     <div className="task-card-details-overlay">
@@ -87,7 +108,7 @@ const TaskCardDetails = ({ task, onSave, onDelete, onClose }) => {
               name="tags"
               ref={tagsRef}
               className="choices-multiple"
-              multiple={true} // Allow multiple selections
+              multiple={true} // Set this to true to allow multiple selections
             >
               <option value="Frontend">FRONTEND</option>
               <option value="UI/UX">UI/UX</option>
