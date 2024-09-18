@@ -24,6 +24,10 @@ text-align: center;
 margin-left: -20px; /* Adjust the value as needed */
 }
 
+.new-task:hover {
+  background-color: #b60000; /* Lighter shade of red for hover effect */
+}
+
 .controls {
 display: flex;
 justify-content: flex-end;
