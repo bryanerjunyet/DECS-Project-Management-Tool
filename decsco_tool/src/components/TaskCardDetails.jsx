@@ -1,25 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Choices from 'choices.js';
+import 'choices.js/public/assets/styles/choices.min.css';
 import './TaskCardDetails.css';
 
 const TaskCardDetails = ({ task, onSave, onDelete, onClose }) => {
   const [editedTask, setEditedTask] = useState(task);
+  const tagsRef = useRef(null); // Reference for the tags select element
+  const choicesInstance = useRef(null); // Store the Choices.js instance
 
+  // Handle the task changes and update local state
   useEffect(() => {
     setEditedTask(task);
-  }, [task]);
 
-  const handleChange = (e) => {
+    // Initialize Choices.js on the tags select element
+    if (tagsRef.current) {
+      if (choicesInstance.current) {
+        choicesInstance.current.destroy(); // Destroy existing instance before creating a new one
+      }
+
+      // Initialize Choices.js
+      choicesInstance.current = new Choices(tagsRef.current, {
+        removeItemButton: true,
+        duplicateItemsAllowed: false,
+        searchEnabled: true,
+        shouldSort: false,
+        placeholderValue: 'Select tags',
+        maxItemCount: -1,
+      });
+
+      // Pre-populate selected tags
+      if (task.tags && task.tags.length > 0) {
+        choicesInstance.current.setChoices(
+          task.tags.map(tag => ({ value: tag, label: tag, selected: true })),
+          'value',
+          'label',
+          false
+        );
+      }
+
+      // Handle changes in the Choices.js select and update React state
+      tagsRef.current.addEventListener('change', function () {
+        const selectedTags = choicesInstance.current.getValue(true); // Get selected tags as an array
+        setEditedTask(prevTask => ({ ...prevTask, tags: selectedTags }));
+      });
+    }
+
+    // Cleanup when component unmounts or task changes
+    return () => {
+      if (choicesInstance.current) {
+        choicesInstance.current.destroy();
+      }
+    };
+  }, [task]); // Only re-run the effect when the task prop changes
+
+  const handleChange = e => {
     const { name, value } = e.target;
     setEditedTask(prevTask => ({ ...prevTask, [name]: value }));
   };
 
-  const handleTagChange = (selectedTags) => {
-    setEditedTask(prevTask => ({ ...prevTask, tags: selectedTags }));
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
-    onSave(editedTask);
+    onSave(editedTask); // Save the updated task
   };
 
   return (
@@ -44,9 +85,9 @@ const TaskCardDetails = ({ task, onSave, onDelete, onClose }) => {
             <select
               id="tags"
               name="tags"
-              multiple
-              value={editedTask.tags}
-              onChange={(e) => handleTagChange(Array.from(e.target.selectedOptions, option => option.value))}
+              ref={tagsRef}
+              className="choices-multiple"
+              multiple={true} // Allow multiple selections
             >
               <option value="Frontend">FRONTEND</option>
               <option value="UI/UX">UI/UX</option>

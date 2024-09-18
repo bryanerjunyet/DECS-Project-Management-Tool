@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Choices from 'choices.js';
 import 'choices.js/public/assets/styles/choices.min.css';
 import './TaskCardForm.css';
@@ -13,29 +13,40 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
     storyPoint: 1,
     typeOfTask: 'Story',
     stageOfTask: 'PLANNING',
-    taskStatus: 'TO DO'
+    taskStatus: 'TO DO',
   });
 
-  // const tagsRef = useRef(null);
+  // Ref for the tags select element
+  const tagsRef = useRef(null);
 
-  // useEffect(() => {
-  //   const choices = new Choices(tagsRef.current, {
-  //     removeItemButton: true,
-  //     duplicateItemsAllowed: false,
-  //   });
+  // Initialize Choices.js on the tags select field
+  useEffect(() => {
+    if (tagsRef.current) {
+      const choices = new Choices(tagsRef.current, {
+        removeItemButton: true, // Allow removing selected tags
+        duplicateItemsAllowed: false, // Prevent duplicates
+        placeholderValue: 'Select tags', // Placeholder for dropdown
+        searchEnabled: true, // Allow searching for tags
+        shouldSort: false, // Prevent sorting of tags
+        items: [], // Start without any selected tags
+      });
 
-  //   return () => {
-  //     choices.destroy();
-  //   };
-  // }, []);
+      // Sync choices with React state
+      tagsRef.current.addEventListener('change', function () {
+        const selectedTags = choices.getValue(true); // Get values of the selected tags
+        setTask((prevTask) => ({ ...prevTask, tags: selectedTags }));
+      });
+
+      // Cleanup Choices.js instance on component unmount
+      return () => {
+        choices.destroy();
+      };
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setTask(prevTask => ({ ...prevTask, [name]: value }));
-  };
-
-  const handleTagChange = (selectedTags) => {
-    setTask(prevTask => ({ ...prevTask, tags: selectedTags }));
+    setTask((prevTask) => ({ ...prevTask, [name]: value }));
   };
 
   const handleSubmit = (e) => {
@@ -47,7 +58,7 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
     <div className="task-card-form-overlay">
       <form className="task-card-form" onSubmit={handleSubmit}>
         <h1>Create New Task</h1>
-        
+
         <div className="form-field">
           <label htmlFor="name">Task Name:</label>
           <input
@@ -65,9 +76,9 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
           <select
             id="tags"
             name="tags"
-            multiple
-            value={task.tags}
-            onChange={(e) => handleTagChange(Array.from(e.target.selectedOptions, option => option.value))}
+            ref={tagsRef}
+            className="choices-multiple"
+            multiple={true} // Set this to true to allow multiple selections
           >
             <option value="Frontend">FRONTEND</option>
             <option value="UI/UX">UI/UX</option>
@@ -149,7 +160,8 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
                 value="Story"
                 checked={task.typeOfTask === 'Story'}
                 onChange={handleChange}
-              /> Story
+              />{' '}
+              Story
             </label>
             <label>
               <input
@@ -158,7 +170,8 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
                 value="Bug"
                 checked={task.typeOfTask === 'Bug'}
                 onChange={handleChange}
-              /> Bug
+              />{' '}
+              Bug
             </label>
           </div>
         </div>
@@ -196,7 +209,9 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
 
         <div className="form-actions">
           <button type="submit" className="save-task">Save Task</button>
-          <button type="button" className="cancel" onClick={onCancel}>Cancel</button>
+          <button type="button" className="cancel" onClick={onCancel}>
+            Cancel
+          </button>
         </div>
       </form>
     </div>
@@ -204,117 +219,3 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
 };
 
 export default TaskCardForm;
-
-
-
-// import React, { useState } from 'react';
-// import './TaskCardForm.css';
-
-// const TaskCardForm = ({ onSubmit, onCancel }) => {
-//   const [task, setTask] = useState({
-//     name: '',
-//     priority: 'medium',
-//     storyPoint: '',
-//     tags: [],
-//   });
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setTask(prevTask => ({ ...prevTask, [name]: value }));
-//   };
-
-//   const handleTagChange = (e) => {
-//     const tags = e.target.value.split(',').map(tag => tag.trim());
-//     setTask(prevTask => ({ ...prevTask, tags }));
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     onSubmit({ ...task, id: Date.now() });
-//   };
-
-//   return (
-//     <div className="task-card-form-overlay">
-//       <form className="task-card-form" onSubmit={handleSubmit}>
-//         <h2>New Task</h2>
-//         <div className="form-field">
-//           <label htmlFor="name">Task Name:</label>
-//           <input
-//             type="text"
-//             id="name"
-//             name="name"
-//             value={task.name}
-//             onChange={handleChange}
-//             required
-//           />
-//         </div>
-//         <div className="form-field">
-//           <label htmlFor="priority">Priority:</label>
-//           <select
-//             id="priority"
-//             name="priority"
-//             value={task.priority}
-//             onChange={handleChange}
-//           >
-//             <option value="low">Low</option>
-//             <option value="medium">Medium</option>
-//             <option value="high">High</option>
-//             <option value="urgent">Urgent</option>
-//           </select>
-//         </div>
-//         <div className="form-field">
-//           <label htmlFor="storyPoint">Story Points:</label>
-//           <input
-//             type="number"
-//             id="storyPoint"
-//             name="storyPoint"
-//             value={task.storyPoint}
-//             onChange={handleChange}
-//             required
-//           />
-//         </div>
-//         <div className="form-field">
-//           <label htmlFor="tags">Tags (comma-separated):</label>
-//           <input
-//             type="text"
-//             id="tags"
-//             name="tags"
-//             value={task.tags.join(', ')}
-//             onChange={handleTagChange}
-//           />
-//         </div>
-//         <div className="form-actions">
-//           <button type="submit" className="save-task">Save Task</button>
-//           <button type="button" className="cancel" onClick={onCancel}>Cancel</button>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default TaskCardForm;
-
-
-// // import React, { useEffect, useState } from 'react';
-// // import NavigationSidebar from './NavigationSidebar';
-
-// // const TaskForm = () => {
-// //     //   const [tasks, setTasks] = useState([]);
-    
-// //     //   useEffect(() => {
-// //     //     // Load tasks from local storage
-// //     //     const loadedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-// //     //     setTasks(loadedTasks);
-// //     //   }, []);
-// //     return (
-// //         <body className="product-backlog">
-// //             <NavigationSidebar />
-// //             <div className="main-content">
-
-// //                 {/* <TaskBoard tasks={tasks} /> */}
-// //             </div>
-// //         </body>
-// //     );
-// // };
-    
-// //     export default TaskForm;
