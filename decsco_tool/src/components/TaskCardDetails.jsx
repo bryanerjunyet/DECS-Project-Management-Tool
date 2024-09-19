@@ -6,36 +6,44 @@ import './TaskCardDetails.css';
 const TaskCardDetails = ({ task, onSave, onDelete, onClose }) => {
   const [editedTask, setEditedTask] = useState(task);
   const tagsRef = useRef(null); // Reference for the tags select element
+  const choicesInstance = useRef(null); // Reference for the Choices.js instance
 
   useEffect(() => {
     setEditedTask(task);
 
     if (tagsRef.current) {
-      const choices = new Choices(tagsRef.current, {
-        removeItemButton: true, // Allows removing tags
-        duplicateItemsAllowed: false, // No duplicate tags
-        searchEnabled: true, // Enable searching for tags
-        shouldSort: false, // Do not sort tags
-        placeholderValue: 'Select tags', // Placeholder for the dropdown
-        maxItemCount: -1, // Allow selecting unlimited tags
-      });
+      // Initialize Choices.js if not already initialized
+      if (!choicesInstance.current) {
+        choicesInstance.current = new Choices(tagsRef.current, {
+          removeItemButton: true, // Allows removing tags
+          duplicateItemsAllowed: false, // No duplicate tags
+          searchEnabled: true, // Enable searching for tags
+          shouldSort: false, // Do not sort tags
+          placeholderValue: 'Select tags', // Placeholder for the dropdown
+          maxItemCount: -1, // Allow selecting unlimited tags
+        });
+
+        // Sync Choices.js with React state
+        tagsRef.current.addEventListener('change', function () {
+          const selectedTags = choicesInstance.current.getValue(true); // Get selected tags as array of values
+          setEditedTask(prevTask => ({ ...prevTask, tags: selectedTags }));
+        });
+      }
 
       // Pre-select tags in Choices.js when task is loaded
       if (task.tags && task.tags.length > 0) {
-        choices.setChoices(task.tags.map(tag => ({ value: tag, label: tag, selected: true })), 'value', 'label', false);
+        choicesInstance.current.clearStore(); // Clear previous choices
+        choicesInstance.current.setChoices(task.tags.map(tag => ({ value: tag, label: tag, selected: true })), 'value', 'label', false);
       }
-
-      // Sync Choices.js with React state
-      tagsRef.current.addEventListener('change', function () {
-        const selectedTags = choices.getValue(true); // Get selected tags as array of values
-        setEditedTask(prevTask => ({ ...prevTask, tags: selectedTags }));
-      });
-
-      // Cleanup on component unmount
-      return () => {
-        choices.destroy();
-      };
     }
+
+    // Cleanup on component unmount
+    return () => {
+      if (choicesInstance.current) {
+        choicesInstance.current.destroy();
+        choicesInstance.current = null;
+      }
+    };
   }, [task]);
 
   // Handle changes for other fields

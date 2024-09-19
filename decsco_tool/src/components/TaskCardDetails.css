@@ -86,16 +86,19 @@
   .save-task {
     background-color: #ff0000;
     color: white;
+    font-weight: bold;
   }
   
   .delete-task {
     background-color: #ff0000;
     color: white;
+    font-weight: bold;
   }
   
   .cancel {
     background-color: #ccc;
     color: black;
+    font-weight: bold;
   }
   
   /* Priority styles */
