@@ -20,6 +20,10 @@
   overflow: hidden;
 }
 
+.task-card:hover {
+  transform: translateY(-5px);
+}
+
 .priority-tag {
   position: absolute;
   top: 10px;
