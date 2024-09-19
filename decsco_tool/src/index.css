@@ -3,7 +3,7 @@ header {
     color: #fff;
     font-family:Verdana, Geneva, Tahoma, sans-serif;
     font-size: 20px;
-    padding: 30px;
+    padding: 25px;
     margin-bottom: 0px;
     display: flex; /* Aligns items in a row */
     justify-content: space-between; /* Aligns items to the sides */

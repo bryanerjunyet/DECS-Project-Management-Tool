@@ -1,6 +1,6 @@
 .filter-sort-controls {
     position: fixed; /* Keeps it in a fixed position */
-    top: 120px; /* Increased the top value to lower it further under the "New Task" button */
+    top: 110px; /* Increased the top value to lower it further under the "New Task" button */
     right: 40px; /* Keep it aligned to the right */
     z-index: 1000; /* Ensure it's on top of other elements */
     display: flex;
@@ -69,6 +69,16 @@
     margin-top: 10px;
     font-size: 15px;
   }
+
+  .filter-options h3 {
+    font-size: 25px;
+    margin-bottom: 15px;
+  }
+
+  .sort-options h3 {
+    font-size: 25px;
+    margin-bottom: 15px;
+  }
   
   .clear-filters {
     margin-top: 20px;
@@ -78,6 +88,7 @@
     padding: 10px;
     cursor: pointer;
     border-radius: 3px;
+    font-weight: bold;
   }
   
   .clear-filters:hover {
