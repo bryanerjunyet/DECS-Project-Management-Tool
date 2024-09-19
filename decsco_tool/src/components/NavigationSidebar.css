@@ -57,6 +57,10 @@
     margin-bottom: 40px;
 }
 
+.navigation_sidebar button.logout:hover {
+    background-color: #b60000;
+  }
+
 .logo {
     display: flex;
     align-items: center;
