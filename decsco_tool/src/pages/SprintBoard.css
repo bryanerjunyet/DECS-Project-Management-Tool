@@ -100,7 +100,9 @@
 }
 
 .ready-sprint-btn:hover {
-  background-color: #45a049;
+  background-color: #337e37;
+  transform: scale(1.1); /* Enlarge the button by 10% */
+  transition: transform 0.2s ease-in-out; /* Smooth transition */
 }
 
 

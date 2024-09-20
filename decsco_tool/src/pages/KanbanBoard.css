@@ -17,17 +17,65 @@
     border-radius: 5px;
   }
   
-  .start-sprint, .end-sprint {
+  .sprint-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .start-sprint, .pause-sprint, .resume-sprint, .end-sprint {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .start-sprint { background-color: #4CAF50; color: white; }
+  .pause-sprint { background-color: #FFC107; color: black; }
+  .resume-sprint { background-color: #2196F3; color: white; }
+  .end-sprint { background-color: #F44336; color: white; }
+
+  .start-sprint:hover {
+    background-color: #2f6a31;
   }
   
-  .start-sprint { background-color: #4CAF50; color: white; }
-  .end-sprint { background-color: #f44336; color: white; }
+  .pause-sprint:hover {
+    background-color: #a76502;
+  }
   
+  .resume-sprint:hover {
+    background-color: #17619d;
+  }
+  
+  .end-sprint:hover {
+    background-color: #7a1e1c;
+  }
+
+  .sprint-status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+
+  .status-not-started { 
+    background-color: #E0E0E0; 
+    color: #616161; 
+    border: 2px solid black;
+  }
+  .status-active { 
+    background-color: #FFF176; 
+    color: #F57F17; 
+    border: 2px solid #F57F17;
+  }
+  .status-completed { 
+    background-color: #309835; 
+    color: #ffffff; 
+    border: 2px solid #004d04;
+  }
+
   .kanban-columns {
     display: flex;
     justify-content: space-between;

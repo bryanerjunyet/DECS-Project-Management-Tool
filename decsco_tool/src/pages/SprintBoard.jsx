@@ -81,7 +81,7 @@ const SprintBoard = () => {
                   className="ready-sprint-btn"
                   onClick={() => handleReadySprint(sprint)}
                 >
-                  Ready Sprint
+                  READY SPRINT
                 </button>
               </td>
             </tr>
