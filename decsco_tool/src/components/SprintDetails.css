@@ -1,0 +1,48 @@
+.sprint-details {
+    padding: 20px;
+  }
+  
+  .sprint-details h2 {
+    margin-bottom: 20px;
+  }
+  
+  .sprint-details p {
+    margin-bottom: 10px;
+  }
+  
+  .task-list {
+    list-style-type: none;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Create responsive columns */
+    padding: 0;
+    gap: 10px; /* Add space between task cards */
+
+  }
+
+  .task-list .task-card {
+    flex: 0 1 auto; /* Prevent task cards from stretching */
+    width: 200px; /* Set a fixed width for task cards */
+    height: auto; /* Allow height to adjust based on content */
+    margin: 10px; /* Add margin around task cards */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better appearance */
+  }
+  
+  .task-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .edit-sprint-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  
+  .edit-sprint-link:hover {
+    background-color: #45a049;
+  }

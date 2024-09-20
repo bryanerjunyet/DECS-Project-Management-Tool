@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProductBacklog from './components/ProductBacklog';
 import TaskCardForm from './components/TaskCardForm'
 import NavigationSidebar from './components/NavigationSidebar';
+import SprintBoard from './components/SprintBoard';
+import SprintBacklog from './components/SprintBacklog';
+import SprintDetails from './components/SprintDetails';
 import './App.css'; // Main app styles
 
 function App() {
@@ -15,6 +18,9 @@ function App() {
               <Route path="/" element={<ProductBacklog />} />
               <Route path="/product-backlog" element={<ProductBacklog />} />
               <Route path="/task-card-form" element={<TaskCardForm/>}/>
+              <Route path="/sprint-board" element={<SprintBoard />} />
+              <Route path="/sprint/:sprintId" element={<SprintDetails />} />
+              <Route path="/sprint/:sprintId/backlog" element={<SprintBacklog />} />
             </Routes>
           </main>
         </div>
