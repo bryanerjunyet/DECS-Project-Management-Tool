@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ProductBacklog from './components/ProductBacklog';
+import ProductBacklog from './pages/ProductBacklog';
 import TaskCardForm from './components/TaskCardForm'
 import NavigationSidebar from './components/NavigationSidebar';
-import SprintBoard from './components/SprintBoard';
-import SprintBacklog from './components/SprintBacklog';
+import SprintBoard from './pages/SprintBoard';
+import SprintBacklog from './pages/SprintBacklog';
 import SprintDetails from './components/SprintDetails';
 import './App.css'; // Main app styles
 

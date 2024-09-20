@@ -88,17 +88,29 @@
     color: white;
     font-weight: bold;
   }
+
+  .save-task:hover {
+    background-color: #cc0000; /* Darker red on hover */
+  }
   
   .delete-task {
     background-color: #ff0000;
     color: white;
     font-weight: bold;
   }
+
+  .delete-task:hover {
+    background-color: #cc0000; /* Darker red on hover */
+  }
   
   .cancel {
     background-color: #ccc;
     color: black;
     font-weight: bold;
+  }
+
+  .cancel:hover {
+    background-color: #999; /* Darker grey on hover */
   }
   
   /* Priority styles */
