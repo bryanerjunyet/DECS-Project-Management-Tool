@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import SprintModal from './SprintModal';
+import SprintModal from '../components/SprintModal';
 import './SprintBoard.css';
 
 const SprintBoard = () => {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import TaskCardView from './TaskCardView';
-import TaskCardForm from './TaskCardForm';
-import TaskCardDetails from './TaskCardDetails';
-import FilterSortControls from './FilterSortControls';
+import TaskCardView from '../components/TaskCardView';
+import TaskCardForm from '../components/TaskCardForm';
+import TaskCardDetails from '../components/TaskCardDetails';
+import FilterSortControls from '../components/FilterSortControls';
 import './ProductBacklog.css';
 
 const ProductBacklog = () => {

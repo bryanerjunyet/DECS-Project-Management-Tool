@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import TaskCardView from './TaskCardView'; // Import the TaskCardView component
+import TaskCardView from '../components/TaskCardView'; // Import the TaskCardView component
 import './SprintBacklog.css';
 
 const SprintBacklog = () => {
