@@ -1,29 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './SprintModal.css';
 
-const SprintModal = ({ onSave, onClose }) => {
+const SprintModal = ({ sprint, onSave, onClose, isEditing = false }) => {
   const [sprintName, setSprintName] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isEditing && sprint) {
+      setSprintName(sprint.name);
+      setStartDate(new Date(sprint.startDate));
+      setEndDate(new Date(sprint.endDate));
+    }
+  }, [isEditing, sprint]);
 
   const handleSave = () => {
-    const newSprint = {
-      id: Date.now().toString(),
+    const updatedSprint = {
+      ...(isEditing ? sprint : { id: Date.now().toString() }),
       name: sprintName,
       startDate: startDate.toISOString().split('T')[0],
       endDate: endDate.toISOString().split('T')[0],
-      status: 'Not started',
-      tasks: []
+      status: isEditing ? sprint.status : 'Not started',
+      tasks: isEditing ? sprint.tasks : []
     };
-    onSave(newSprint);
+
+    onSave(updatedSprint);
+    onClose();
+
+    if (!isEditing) {
+      navigate(`/sprint/${updatedSprint.id}/backlog`);
+    }
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>Create Sprint</h2>
+        <h2>{isEditing ? 'Edit Sprint' : 'Create Sprint'}</h2>
         <input
           type="text"
           className="sprint-name"
@@ -40,7 +56,7 @@ const SprintModal = ({ onSave, onClose }) => {
           <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
         </div>
         <div className="modal-actions">
-          <button onClick={handleSave}>Save Sprint</button>
+          <button onClick={handleSave}>{isEditing ? 'Update Sprint' : 'Save Sprint'}</button>
           <button onClick={onClose}>Cancel</button>
         </div>
       </div>

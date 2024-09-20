@@ -54,47 +54,55 @@ const SprintBacklog = () => {
   };
 
   return (
-    <div className="sprint-task-selection">
-      <h2>Select Tasks for Sprint: {currentSprint?.name}</h2>
-      <div className="task-selection-container">
-        <div 
-          className="product-backlog-selection"
-          onDragOver={handleDragOver}
-          onDrop={(e) => handleDrop(e, 'product')}
-        >
-          <h3>Product Backlog</h3>
-          <div className="task-grid">
-            {productBacklog.map(task => (
-              <div 
-                key={task.id}
-                draggable
-                onDragStart={(e) => handleDragStart(e, task)}
-              >
-                <TaskCardView task={task} onClick={handleTaskClick} />
+    <div className="sprint-backlog-page">
+      <header className="page-header">
+        <h2 className= "sprint-title">Sprint Backlog: {currentSprint?.name}</h2>
+        <button onClick={handleSave}>Save Sprint</button>
+      </header>
+      <div className="sprint-task-selection">
+        <div className="task-selection-container">
+          <div className="backlog-column product-backlog-selection">
+            <h3 className="backlog-heading">Product Backlog</h3>
+            <div 
+              className="task-grid-container"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, 'product')}
+            >
+              <div className="task-grid">
+                {productBacklog.map(task => (
+                  <div 
+                    key={task.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, task)}
+                  >
+                    <TaskCardView task={task} onClick={handleTaskClick} />
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-        </div>
-        <div 
-          className="sprint-backlog-selection" 
-          onDragOver={handleDragOver}
-          onDrop={(e) => handleDrop(e, 'sprint')}
-        >
-          <h3>Sprint Backlog</h3>
-          <div className="task-grid">
-            {sprintBacklog.map(task => (
-              <div 
-                key={task.id}
-                draggable
-                onDragStart={(e) => handleDragStart(e, task)}
-              >
-                <TaskCardView task={task} onClick={handleTaskClick} />
+          <div className="backlog-column sprint-backlog-selection">
+            <h3 className="backlog-heading">Sprint Backlog</h3>
+            <div 
+              className="task-grid-container"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, 'sprint')}
+            >
+              <div className="task-grid">
+                {sprintBacklog.map(task => (
+                  <div 
+                    key={task.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, task)}
+                  >
+                    <TaskCardView task={task} onClick={handleTaskClick} />
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>
-      <button onClick={handleSave}>Save Sprint Tasks</button>
     </div>
   );
 };

@@ -23,8 +23,8 @@ body {
     background-color: #000;
     color: #fff;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 30px;
-    padding: 35px;
+    font-size: 18px;
+    padding: 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
