@@ -12,18 +12,10 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.5); /* 50% transparent white */
     padding: 10px;
     border-radius: 5px;
   }
-  
-  .sprint-status {
-    font-weight: bold;
-  }
-  
-  .status-not-started { color: grey; }
-  .status-active { color: #ffcc00; }
-  .status-completed { color: green; }
   
   .start-sprint, .end-sprint {
     padding: 10px 20px;
@@ -44,7 +36,7 @@
   
   .kanban-column {
     flex: 1;
-    background-color: #e0e0e0;
+    background-color: rgba(255, 255, 255, 0.5); /* 50% transparent white */
     border-radius: 5px;
     padding: 10px;
     min-width: 250px;
