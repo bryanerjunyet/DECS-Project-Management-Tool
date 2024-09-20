@@ -32,7 +32,7 @@ const SprintDetails = ({ sprint, onClose, onUpdate }) => {
         <button className="edit-sprint-button" onClick={handleEditClick}>Edit Sprint</button>
         <h3 className="tasks-heading">Tasks</h3>
         <div className="task-grid">
-          {currentSprint.tasks.map(task => (
+          {currentSprint.tasks && currentSprint.tasks.map(task => (
             <TaskCardView key={task.id} task={task} />
           ))}
         </div>

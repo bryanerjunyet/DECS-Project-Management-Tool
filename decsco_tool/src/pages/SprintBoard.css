@@ -88,6 +88,20 @@
 }
 
 
+.ready-sprint-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.ready-sprint-btn:hover {
+  background-color: #45a049;
+}
 
 
 

@@ -27,10 +27,10 @@ const SprintModal = ({ sprint, onSave, onClose, isEditing = false }) => {
       status: isEditing ? sprint.status : 'Not started',
       tasks: isEditing ? sprint.tasks : []
     };
-
+  
     onSave(updatedSprint);
     onClose();
-
+  
     if (!isEditing) {
       navigate(`/sprint/${updatedSprint.id}/backlog`);
     }

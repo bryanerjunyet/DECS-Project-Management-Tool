@@ -28,12 +28,13 @@ const SprintBoard = () => {
   };
 
   const handleUpdateSprint = (updatedSprint) => {
-    const updatedSprints = sprints.map(sprint => 
+    const updatedSprints = sprints.map(sprint =>
       sprint.id === updatedSprint.id ? updatedSprint : sprint
     );
     setSprints(updatedSprints);
     updateLocalStorage(updatedSprints);
     setShowSprintDetails(false);
+    setSelectedSprint(null);
   };
 
   const handleSprintClick = (sprint) => {
@@ -44,6 +45,10 @@ const SprintBoard = () => {
   const handleCloseSprintDetails = () => {
     setShowSprintDetails(false);
     setSelectedSprint(null);
+  };
+
+  const handleReadySprint = (sprint) => {
+    navigate(`/kanban-board/${sprint.id}`);
   };
 
   return (
@@ -61,15 +66,24 @@ const SprintBoard = () => {
             <th>Start Date</th>
             <th>End Date</th>
             <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {sprints.map((sprint) => (
-            <tr key={sprint.id} onClick={() => handleSprintClick(sprint)}>
-              <td>{sprint.name}</td>
+            <tr key={sprint.id}>
+              <td onClick={() => handleSprintClick(sprint)}>{sprint.name}</td>
               <td>{sprint.startDate}</td>
               <td>{sprint.endDate}</td>
               <td>{sprint.status}</td>
+              <td>
+                <button 
+                  className="ready-sprint-btn"
+                  onClick={() => handleReadySprint(sprint)}
+                >
+                  Ready Sprint
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
