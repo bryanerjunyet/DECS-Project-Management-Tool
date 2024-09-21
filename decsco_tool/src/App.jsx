@@ -48,7 +48,7 @@ function App() {
                 <Route path="/kanban-board" element={<KanbanBoard />} />
                 <Route path="/kanban-view/:sprintId" element={<KanbanView />} />
                 <Route path="/sprint/:sprintId/task/:taskId" element={<SprintTaskDetails />} />
-                <Route path="*" element={<Navigate to="/sprint-board" />} />
+                {/* <Route path="*" element={<Navigate to="/sprint-board" />} /> */}
               </Routes>
             </main>
           </>

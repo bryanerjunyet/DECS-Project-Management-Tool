@@ -212,7 +212,7 @@ const KanbanView = () => {
         <div className="kanban-columns">
           {['todo', 'inProgress', 'done'].map((columnId) => (
             <div key={columnId} className="kanban-column">
-              <h3 className="kanban-column-title">{columnId === 'todo' ? 'To-Do' : columnId === 'inProgress' ? 'In-Progress' : 'Done'}</h3>
+              <h3 className={`kanban-column-title ${columnId}`}>{columnId === 'todo' ? 'To-Do' : columnId === 'inProgress' ? 'In-Progress' : 'Done'}</h3>
               <Droppable droppableId={columnId}>
                 {(provided) => (
                   <div

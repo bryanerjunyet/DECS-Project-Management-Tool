@@ -123,14 +123,30 @@
     flex: 1;
     background-color: rgba(255, 255, 255, 0.5); /* 50% transparent white */
     border-radius: 5px;
-    padding: 10px;
     min-width: 250px;
   }
   
   .kanban-column-title {
+    padding: 10px;
+    margin: 0;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 20px;
+    color: white;
+    border-radius: 4px 4px 0 0; /* Rounded top corners */
+  }
+  
+  .kanban-column-title.todo {
+    background-color: #0088ffd8; /* Tomato */
+  }
+  
+  .kanban-column-title.inProgress {
+    background-color: #ff8936dc; /* Orange */
+  }
+  
+  .kanban-column-title.done {
+    background-color: #04a04adb; /* LimeGreen */
   }
   
   .task-list {
