@@ -48,7 +48,7 @@ const SprintBoard = () => {
   };
 
   const handleReadySprint = (sprint) => {
-    navigate(`/kanban-board/${sprint.id}`);
+    navigate(`/kanban-view/${sprint.id}`);
   };
 
   return (
