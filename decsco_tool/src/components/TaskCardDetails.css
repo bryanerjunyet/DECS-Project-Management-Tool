@@ -78,6 +78,7 @@
   
   .save-task, .delete-task, .cancel {
     padding: 10px 15px;
+    font-size: 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -87,6 +88,11 @@
     background-color: #ff0000;
     color: white;
     font-weight: bold;
+    padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+    background-repeat: no-repeat;
+    background-position: 10px center; /* Position icon on the left */
+    background-size: 20px 20px; /* Size of the icon */
+    background-image: url('../utils/confirm_button.png');
   }
 
   .save-task:hover {
@@ -97,6 +103,11 @@
     background-color: #ff0000;
     color: white;
     font-weight: bold;
+    padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+    background-repeat: no-repeat;
+    background-position: 10px center; /* Position icon on the left */
+    background-size: 20px 20px; /* Size of the icon */
+    background-image: url('../utils/delete_button.png');
   }
 
   .delete-task:hover {

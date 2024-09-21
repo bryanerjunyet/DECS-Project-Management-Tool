@@ -4,11 +4,11 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('../utils/client_background.jpg'); /* Set the custom background image */
+    width: 100vw;
+    background-image: url('../utils/client_background_7.jpg'); /* Set the custom background image */
     background-size: cover; /* Ensure the background covers the entire container */
     background-position: center; /* Center the background image */
     background-repeat: no-repeat; /* Prevent the background from repeating */
-    margin-left: 40%;
   }
   
   .login-box {
@@ -24,17 +24,46 @@
     width: 100px;
     margin: 0 auto 2rem;
   }
+
+  .login-title {
+    text-align: center;
+    line-height: 1.5; /* Add line height to increase spacing between lines */
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-bottom: 2rem;
+  }
   
   .input-group {
     margin-bottom: 1rem;
   }
   
-  input {
+  input.username-input {
     width: 100%;
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
+  }
+
+  input.username-input:focus {
+    border-color: #ff2f00; /* Change border color on focus */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Add a subtle shadow on focus */
+    outline: none; /* Remove default outline */
+  }
+
+  input.password-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+
+  input.password-input:focus {
+    border-color: #ff2f00; /* Change border color on focus */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Add a subtle shadow on focus */
+    outline: none; /* Remove default outline */
   }
   
   .login-button {
@@ -45,6 +74,7 @@
     border: none;
     border-radius: 4px;
     font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
   }

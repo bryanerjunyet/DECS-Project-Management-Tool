@@ -43,9 +43,13 @@ function LoginPage({ onLogin }) {
     <div className="login-container">
       <div className="login-box">
         <img src={logo} alt="DECS Co. Logo" className="login-logo" />
+        <p className="login-title">
+            DECS Company<br />Project Tool
+        </p>
         <form onSubmit={handleLogin}>
           <div className="input-group">
             <input
+              className="username-input"
               type="text"
               placeholder="Username"
               value={username}
@@ -55,6 +59,7 @@ function LoginPage({ onLogin }) {
           </div>
           <div className="input-group">
             <input
+              className="password-input"
               type="password"
               placeholder="Password"
               value={password}
