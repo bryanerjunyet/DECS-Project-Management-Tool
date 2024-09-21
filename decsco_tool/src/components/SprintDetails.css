@@ -46,14 +46,20 @@
   color: rgb(0, 0, 0);
   border: 2px solid #000000; /* Add a solid border */
   font-weight: bold;
+  font-size: 15px;
   text-decoration: none;
   border-radius: 4px;
+  padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+  background-repeat: no-repeat;
+  background-position: 10px center; /* Position icon on the left */
+  background-size: 20px 20px; /* Size of the icon */
+  background-image: url('../utils/edit_button_black.png');
 }
 
 .edit-sprint-link:hover {
   background-color: #fcf36c;
   border: 2px solid #ffffff; /* Add a solid border */
-
+  background-image: url('../utils/edit_button_white.png');
 }
 
 .edit-sprint-button {
@@ -64,12 +70,19 @@
   color: rgb(0, 0, 0);
   border: 2px solid #000000;
   font-weight: bold;
+  font-size: 15px;
   text-decoration: none;
   border-radius: 4px;
   cursor: pointer;
+  padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+  background-repeat: no-repeat;
+  background-position: 10px center; /* Position icon on the left */
+  background-size: 20px 20px; /* Size of the icon */
+  background-image: url('../utils/edit_button_black.png');
 }
 
 .edit-sprint-button:hover {
   background-color: #fcf36c;
   border: 2px solid #ffffff;
+  background-image: url('../utils/edit_button_white.png');
 }

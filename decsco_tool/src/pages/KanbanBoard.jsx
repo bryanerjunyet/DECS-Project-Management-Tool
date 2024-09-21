@@ -184,15 +184,9 @@ const KanbanBoard = () => {
 
   return (
     <div className="kanban-board">
-      <h2>Sprint: {sprint.name}</h2>
-      <div className="sprint-info">
-        <div>Start Date: {sprint.startDate}</div>
-        <div>End Date: {sprint.endDate}</div>
-        <div className={`sprint-status status-${sprintStatus.toLowerCase().replace(' ', '-')}`}>
-          Status: {sprintStatus}
-        </div>
-      </div>
-      <div className="sprint-controls">
+      <header className="page-header">
+        <h1>Kanban Board: {sprint.name}</h1>
+        <div className="sprint-controls">
         {!isSprintActive && sprintStatus !== 'Completed' && (
           <button onClick={handleStartSprint} className="start-sprint">Start Sprint</button>
         )}
@@ -205,6 +199,14 @@ const KanbanBoard = () => {
         {isSprintActive && isPaused && (
           <button onClick={handleResumeSprint} className="resume-sprint">Resume Sprint</button>
         )}
+      </div>
+      </header>
+      <div className="sprint-info">
+        <div>Start Date: {sprint.startDate}</div>
+        <div>End Date: {sprint.endDate}</div>
+        <div className={`sprint-status status-${sprintStatus.toLowerCase().replace(' ', '-')}`}>
+          Status: {sprintStatus}
+        </div>
       </div>
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="kanban-columns">

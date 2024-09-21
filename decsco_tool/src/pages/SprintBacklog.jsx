@@ -57,7 +57,7 @@ const SprintBacklog = () => {
     <div className="sprint-backlog-page">
       <header className="page-header">
         <h2 className= "sprint-title">Sprint Backlog: {currentSprint?.name}</h2>
-        <button onClick={handleSave}>Save Sprint</button>
+        <button className= "save-sprint-button" onClick={handleSave}>Save Sprint</button>
       </header>
       <div className="sprint-task-selection">
         <div className="task-selection-container">
