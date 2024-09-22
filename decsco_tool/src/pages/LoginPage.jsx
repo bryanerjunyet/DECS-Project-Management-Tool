@@ -7,7 +7,7 @@ const validUsers = [
   { username: 'ErJunYet', password: 'ILoveMonash1' },
   { username: 'IrdeenaIxora', password: 'ILoveMonash2' },
   { username: 'ChongSuSuen', password: 'ILoveMonash3' },
-  { username: 'BooYueRou', password: 'ILoveMonash4' },
+  { username: 'BooYeuRou', password: 'ILoveMonash4' },
   { username: 'DylanWong', password: 'ILoveMonash5' },
 ];
 

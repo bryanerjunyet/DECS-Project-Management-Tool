@@ -6,8 +6,8 @@ import './TaskCardDetails.css';
 const TaskCardDetails = ({ task, onSave, onDelete, onClose }) => {
   const [editedTask, setEditedTask] = useState(task);
   const tagsRef = useRef(null); // Reference for the tags select element
-
   
+
   useEffect(() => {
     setEditedTask(task);
 
