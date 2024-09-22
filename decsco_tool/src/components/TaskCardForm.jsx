@@ -16,51 +16,6 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
     taskStatus: 'TO DO',
   });
 
-  const [loading, setLoading] = useState(false); // Loading state for form submission
-  const [error, setError] = useState(null); // Error state for form submission
-
-  // Retreve the task details
-  const getTasks = async () => {
-    try{
-      const response = await fetch('http://localhost:3001/tasks',{
-      method: 'GET',      // GET request to fetch tasks
-      headers: {
-        'Content-Type': 'application/json', // Specify the content type
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch tasks');
-    }
-    const data = await response.json();
-
-    const formattedTasks = data.map((task => ({
-      id: task.task_id,
-      name: task.task_name,
-      description: task.description,
-      priority: task.priority_name,
-      tag: task.tag_name,
-      type: task.type_name,
-      stage: task.stage_name,
-      status: task.status_name,
-      storyPoints: task.story_point,
-      assignee: task.display_name,
-    })));
-
-    getTasks(formattedTasks); // Set the tasks in state
-    } catch (error) { // Catch any errors and log them to the console
-      setError(error);
-    }finally{ // Set loading to false regardless of success or failure
-      setLoading(false);
-    }
-  };
-
-  // Fetch the tasks when the component mounts
-  useEffect(() => {
-    setLoading(true); // Set loading to true when fetching tasks
-    getTasks(); // Fetch the tasks
-  }, []);
-
   // Ref for the tags select element
   const tagsRef = useRef(null);
 
@@ -97,32 +52,6 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({ ...task, id: Date.now() });
-  };
-
-  // Render the task based on the state of the data fetching process
-  const renderTask = () => {
-    if (loading) {
-      return <p>Loading tasks...</p>;
-    }
-
-    if (error) {
-      return <p className="error-message">{error}</p>;
-    }
-
-    if (task.length === 0) {
-      return <p>No tasks found. Add a new task to get started!</p>;
-    }
-
-    return task.map((task) => (
-      <TaskCard key={task.id} task={task} onEdit={handleEdit} 
-        priority={task.priority}
-        stage={task.stage}
-        assignee={task.assignee}
-        storyPoints={task.storyPoints}
-        tags={task.tag}
-        status={task.status}
-        description={task.description}/>
-    )); // Render the TaskCard component for each task
   };
 
   return (
