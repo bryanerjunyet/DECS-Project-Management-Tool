@@ -23,13 +23,10 @@ const KanbanView = () => {
 
   useEffect(() => {
     fetchSprint();
-  }, [sprintId]);
-
-  useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, []);
+  }, [sprintId]);
 
   const fetchSprint = () => {
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
@@ -39,6 +36,8 @@ const KanbanView = () => {
       setSprintStatus(foundSprint.status || 'Not Started');
       initializeTasks(foundSprint.tasks);
       setSprintTime(foundSprint.totalTime || 0);
+      setIsSprintActive(foundSprint.status === 'Active');
+      setIsPaused(false);
     }
   };
 
@@ -154,7 +153,9 @@ const KanbanView = () => {
     setIsSprintActive(false);
     setSprintStatus('Completed');
     pauseTimer();
-    const updatedSprint = { ...sprint, status: 'Completed', totalTime: sprintTime };
+    const finalTime = sprintTime;
+    setSprintTime(finalTime);
+    const updatedSprint = { ...sprint, status: 'Completed', totalTime: finalTime };
     updateSprintInStorage(updatedSprint);
   };
 
@@ -204,6 +205,9 @@ const KanbanView = () => {
   };
 
   const formatTime = (seconds) => {
+    if (typeof seconds !== 'number' || isNaN(seconds)) {
+      return "00:00:00";
+    }
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = seconds % 60;
@@ -242,6 +246,9 @@ const KanbanView = () => {
         <div>End Date: {sprint.endDate}</div>
         <div className={`sprint-status status-${sprintStatus.toLowerCase().replace(' ', '-')}`}>
           Status: {sprintStatus}
+        </div>
+        <div className={`completed-sprint-time ${sprintStatus === 'Completed' ? 'status-completed' : ''}`}>
+          Total Time: {formatTime(sprint.totalTime || 0)}
         </div>
       </div>
       <div className="kanban-columns">

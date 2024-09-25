@@ -11,28 +11,77 @@
   margin-bottom: 5px;
 }
 
+.page-header {
+  margin-bottom: 20px;
+}
+
 .sprint-info {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
   margin-bottom: 20px;
   margin-left: 20px;
   margin-right: 20px;
-  background-color: rgba(255, 255, 255, 0.5); /* 50% transparent white */
+  background-color: rgba(255, 255, 255, 0.5);
   padding: 10px;
   border-radius: 5px;
   font-weight: bold;
   font-family: 'Courier New', Courier, monospace;
 }
 
+.sprint-info > div {
+  flex: 1 1 calc(25% - 10px);
+  margin: 5px;
+  padding: 10px;
+  text-align: center;
+  border: 2px solid #acacac;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  color: white;
+}
+
+.sprint-info > div:nth-child(1),
+.sprint-info > div:nth-child(2) {
+  background-color: #8B0000;
+}
+
+.sprint-status {
+  font-weight: bold;
+}
+
+.status-not-started { 
+  background-color: #348fb9;
+  color: white;
+}
+
+.status-active { 
+  background-color: #e3c93a;
+  color: black;
+}
+
+.status-completed { 
+  background-color: #489848;
+  color: white;
+}
+
+.completed-sprint-time {
+  background-color: #a77a19;
+  color: white;
+}
+
 .sprint-controls {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 10px;
 }
 
 .start-sprint, .pause-sprint, .resume-sprint, .end-sprint {
-  padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+  padding: 10px 20px 10px 40px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -40,8 +89,8 @@
   font-size: 15px;
   transition: background-color 0.3s ease;
   background-repeat: no-repeat;
-  background-position: 10px center; /* Position icon on the left */
-  background-size: 20px 20px; /* Size of the icon */
+  background-position: 10px center;
+  background-size: 20px 20px;
 }
 
 .start-sprint {
@@ -68,42 +117,20 @@
   background-image: url('../utils/stop_button.png');
 }
 
-.start-sprint:hover {
-  background-color: #2f6a31;
-}
+.start-sprint:hover { background-color: #45a049; }
+.pause-sprint:hover { background-color: #e6ae00; }
+.resume-sprint:hover { background-color: #1e87dc; }
+.end-sprint:hover { background-color: #d32f2f; }
 
-.pause-sprint:hover {
-  background-color: #a76502;
-}
-
-.resume-sprint:hover {
-  background-color: #17619d;
-}
-
-.end-sprint:hover {
-  background-color: #7a1e1c;
-}
-
-.sprint-status {
-  padding: 5px 10px;
-  border-radius: 5px;
+.sprint-time {
+  font-size: 1.2rem;
   font-weight: bold;
-}
-
-.status-not-started { 
-  background-color: #E0E0E0; 
-  color: #616161; 
-  border: 2px solid black;
-}
-.status-active { 
-  background-color: #FFF176; 
-  color: #F57F17; 
-  border: 2px solid #F57F17;
-}
-.status-completed { 
-  background-color: #309835; 
-  color: #ffffff; 
-  border: 2px solid #004d04;
+  padding: 5px 10px;
+  background-color: #e7db33;
+  border-radius: 5px;
+  min-width: 100px;
+  text-align: center;
+  color: white;
 }
 
 .kanban-columns {
@@ -116,10 +143,10 @@
 
 .kanban-column {
   flex: 1;
-  background-color: rgba(255, 255, 255, 0.5); /* 50% transparent white */
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 5px;
   min-width: 250px;
-  transition: background-color 0.3s ease, border 0.3s ease; /* Smooth transition for feedback */
+  transition: background-color 0.3s ease, border 0.3s ease;
 }
 
 .kanban-column-title {
@@ -130,43 +157,41 @@
   font-weight: bold;
   text-align: center;
   color: white;
-  border-radius: 4px 4px 0 0; /* Rounded top corners */
+  border-radius: 4px 4px 0 0;
 }
 
 .kanban-column-title.todo {
-  background-color: #0088ffd8; /* Blue */
+  background-color: #0088ffd8;
 }
 
 .kanban-column-title.inProgress {
-  background-color: #ff8936dc; /* Orange */
+  background-color: #ff8936dc;
 }
 
 .kanban-column-title.done {
-  background-color: #04a04adb; /* LimeGreen */
+  background-color: #04a04adb;
 }
-  
+
 .task-list {
   min-height: 300px;
   max-width: fit-content;
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Adjust the gap as needed */
-  margin-bottom: 20px; /* Add margin to space out droppable areas */
+  gap: 15px;
+  margin-bottom: 20px;
   margin-left: 30px;
   margin-right: 30px;
 }
 
-/* Drop Feedback Styles */
 .dragged-over {
-  background-color: rgba(0, 150, 136, 0.3); /* Highlight the column when dragged over */
-  border: 2px dashed #009688; /* Add dashed border for feedback */
+  background-color: rgba(0, 150, 136, 0.3);
+  border: 2px dashed #009688;
 }
 
 .dragged-over .kanban-column-title {
-  background-color: rgba(0, 150, 136, 0.7); /* Change the title color slightly */
+  background-color: rgba(0, 150, 136, 0.7);
 }
 
-/* Add more styles for TaskCardView and SprintTaskDetails as needed */
 .task-details-overlay {
   position: fixed;
   top: 0;
@@ -190,31 +215,31 @@
   overflow-y: auto;
 }
 
-.sprint-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-
-.sprint-time {
-  font-size: 1.2rem;
-  font-weight: bold;
-  padding: 5px 10px;
-  background-color: #721212;
-  border-radius: 5px;
-  min-width: 100px;
-  text-align: center;
-}
-
-/* Add responsive design for smaller screens */
 @media (max-width: 768px) {
   .sprint-controls {
     flex-direction: column;
   }
   
   .sprint-time {
-    order: -1; /* Move the timer above the buttons on small screens */
+    order: -1;
     margin-bottom: 10px;
+  }
+
+  .sprint-info > div {
+    flex-basis: calc(50% - 10px);
+  }
+
+  .kanban-columns {
+    flex-direction: column;
+  }
+
+  .kanban-column {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sprint-info > div {
+    flex-basis: 100%;
   }
 }
