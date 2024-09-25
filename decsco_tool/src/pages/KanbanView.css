@@ -189,3 +189,32 @@
   max-height: 90%;
   overflow-y: auto;
 }
+
+.sprint-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.sprint-time {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 5px 10px;
+  background-color: #721212;
+  border-radius: 5px;
+  min-width: 100px;
+  text-align: center;
+}
+
+/* Add responsive design for smaller screens */
+@media (max-width: 768px) {
+  .sprint-controls {
+    flex-direction: column;
+  }
+  
+  .sprint-time {
+    order: -1; /* Move the timer above the buttons on small screens */
+    margin-bottom: 10px;
+  }
+}

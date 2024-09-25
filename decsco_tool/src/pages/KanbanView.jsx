@@ -17,11 +17,19 @@ const KanbanView = () => {
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [isSprintActive, setIsSprintActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const timerRef = useRef({});
+  const [sprintTime, setSprintTime] = useState(0);
+  const timerRef = useRef(null);
+  const startTimeRef = useRef(null);
 
   useEffect(() => {
     fetchSprint();
   }, [sprintId]);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
 
   const fetchSprint = () => {
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
@@ -30,6 +38,7 @@ const KanbanView = () => {
       setSprint(foundSprint);
       setSprintStatus(foundSprint.status || 'Not Started');
       initializeTasks(foundSprint.tasks);
+      setSprintTime(foundSprint.totalTime || 0);
     }
   };
 
@@ -74,12 +83,6 @@ const KanbanView = () => {
         [targetColumn]: targetTasks
       }));
 
-      if (targetColumn === 'inProgress' && sourceColumn !== 'inProgress') {
-        startTimer(task.id);
-      } else if (sourceColumn === 'inProgress' && targetColumn !== 'inProgress') {
-        stopTimer(task.id);
-      }
-
       updateTaskStatus(task.id, getStatusFromColumn(targetColumn));
     }
   };
@@ -91,35 +94,6 @@ const KanbanView = () => {
       }
     }
     return null;
-  };
-
-  const startTimer = (taskId) => {
-    if (!timerRef.current[taskId]) {
-      timerRef.current[taskId] = {
-        startTime: Date.now(),
-        elapsed: 0
-      };
-    }
-  };
-
-  const stopTimer = (taskId) => {
-    if (timerRef.current[taskId]) {
-      const elapsed = Date.now() - timerRef.current[taskId].startTime + timerRef.current[taskId].elapsed;
-      updateTaskCompletionTime(taskId, elapsed);
-      delete timerRef.current[taskId];
-    }
-  };
-
-  const updateTaskCompletionTime = (taskId, time) => {
-    setTasks(prevTasks => {
-      const updatedTasks = {};
-      for (const column in prevTasks) {
-        updatedTasks[column] = prevTasks[column].map(task =>
-          task.id === taskId ? { ...task, completionTime: (task.completionTime || 0) + time } : task
-        );
-      }
-      return updatedTasks;
-    });
   };
 
   const getStatusFromColumn = (column) => {
@@ -143,34 +117,44 @@ const KanbanView = () => {
     });
   };
 
+  const startTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    startTimeRef.current = Date.now() - sprintTime * 1000;
+    timerRef.current = setInterval(() => {
+      const elapsedSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      setSprintTime(elapsedSeconds);
+    }, 1000);
+  };
+
+  const pauseTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
   const handleStartSprint = () => {
     setIsSprintActive(true);
     setSprintStatus('Active');
-    const updatedSprint = { ...sprint, status: 'Active' };
+    startTimer();
+    const updatedSprint = { ...sprint, status: 'Active', totalTime: sprintTime };
     updateSprintInStorage(updatedSprint);
   };
 
   const handlePauseSprint = () => {
     setIsPaused(true);
-    Object.keys(timerRef.current).forEach(taskId => {
-      const timer = timerRef.current[taskId];
-      timer.elapsed += Date.now() - timer.startTime;
-      timer.startTime = null;
-    });
+    pauseTimer();
+    const updatedSprint = { ...sprint, totalTime: sprintTime };
+    updateSprintInStorage(updatedSprint);
   };
 
   const handleResumeSprint = () => {
     setIsPaused(false);
-    Object.keys(timerRef.current).forEach(taskId => {
-      timerRef.current[taskId].startTime = Date.now();
-    });
+    startTimer();
   };
 
   const handleEndSprint = () => {
     setIsSprintActive(false);
     setSprintStatus('Completed');
-    Object.keys(timerRef.current).forEach(stopTimer);
-    const updatedSprint = { ...sprint, status: 'Completed' };
+    pauseTimer();
+    const updatedSprint = { ...sprint, status: 'Completed', totalTime: sprintTime };
     updateSprintInStorage(updatedSprint);
   };
 
@@ -219,6 +203,13 @@ const KanbanView = () => {
     setSelectedTask(null);
   };
 
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
   if (!sprint) {
     return <div>Loading...</div>;
   }
@@ -234,11 +225,15 @@ const KanbanView = () => {
           {isSprintActive && !isPaused && (
             <>
               <button onClick={handlePauseSprint} className="pause-sprint">Pause Sprint</button>
+              <span className="sprint-time">Time: {formatTime(sprintTime)}</span>
               <button onClick={handleEndSprint} className="end-sprint">End Sprint</button>
             </>
           )}
           {isSprintActive && isPaused && (
-            <button onClick={handleResumeSprint} className="resume-sprint">Resume Sprint</button>
+            <>
+              <button onClick={handleResumeSprint} className="resume-sprint">Resume Sprint</button>
+              <span className="sprint-time">Time: {formatTime(sprintTime)}</span>
+            </>
           )}
         </div>
       </header>
@@ -272,10 +267,7 @@ const KanbanView = () => {
                 >
                   <TaskCardView 
                     task={task} 
-                    completionTime={timerRef.current[task.id] ? 
-                      Date.now() - timerRef.current[task.id].startTime + timerRef.current[task.id].elapsed : 
-                      task.completionTime || 0
-                    }
+                    completionTime={task.completionTime || 0}
                   />
                 </div>
               ))}
