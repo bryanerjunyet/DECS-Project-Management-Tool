@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TaskCardView from '../components/TaskCardView';
-import SprintTaskDetails from '../components/SprintTaskDetails';
+import TaskCardDetails from '../components/TaskCardDetails';
 import './KanbanView.css';
 
 const KanbanView = () => {
@@ -36,38 +35,62 @@ const KanbanView = () => {
 
   const initializeTasks = (sprintTasks) => {
     const initialTasks = {
-      todo: sprintTasks,
-      inProgress: [],
-      done: []
+      todo: sprintTasks.filter(task => task.taskStatus === 'TO DO'),
+      inProgress: sprintTasks.filter(task => task.taskStatus === 'IN PROGRESS'),
+      done: sprintTasks.filter(task => task.taskStatus === 'COMPLETED')
     };
     setTasks(initialTasks);
   };
 
-  const onDragEnd = (result) => {
-    const { source, destination } = result;
-    if (!destination) return;
+  const handleDragStart = (e, task) => {
+    e.dataTransfer.setData('application/json', JSON.stringify(task));
+    e.dataTransfer.effectAllowed = 'move';
+  };
 
-    const sourceColumn = source.droppableId;
-    const destColumn = destination.droppableId;
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('dragged-over');
+  };
 
-    const sourceItems = Array.from(tasks[sourceColumn]);
-    const destItems = Array.from(tasks[destColumn]);
-    const [removed] = sourceItems.splice(source.index, 1);
-    destItems.splice(destination.index, 0, removed);
+  const handleDragLeave = (e) => {
+    e.currentTarget.classList.remove('dragged-over');
+  };
 
-    setTasks({
-      ...tasks,
-      [sourceColumn]: sourceItems,
-      [destColumn]: destItems
-    });
+  const handleDrop = (e, targetColumn) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove('dragged-over');
+    const taskData = e.dataTransfer.getData('application/json');
+    const task = JSON.parse(taskData);
+    const sourceColumn = findTaskColumn(task.id);
 
-    if (destColumn === 'inProgress' && sourceColumn !== 'inProgress') {
-      startTimer(removed.id);
-    } else if (sourceColumn === 'inProgress' && destColumn !== 'inProgress') {
-      stopTimer(removed.id);
+    if (sourceColumn !== targetColumn) {
+      const sourceTasks = tasks[sourceColumn].filter(t => t.id !== task.id);
+      const targetTasks = [...tasks[targetColumn], { ...task, taskStatus: getStatusFromColumn(targetColumn) }];
+
+      setTasks(prevTasks => ({
+        ...prevTasks,
+        [sourceColumn]: sourceTasks,
+        [targetColumn]: targetTasks
+      }));
+
+      if (targetColumn === 'inProgress' && sourceColumn !== 'inProgress') {
+        startTimer(task.id);
+      } else if (sourceColumn === 'inProgress' && targetColumn !== 'inProgress') {
+        stopTimer(task.id);
+      }
+
+      updateTaskStatus(task.id, getStatusFromColumn(targetColumn));
     }
+  };
 
-    updateTaskStatus(removed.id, getStatusFromColumn(destColumn));
+  const findTaskColumn = (taskId) => {
+    for (const column in tasks) {
+      if (tasks[column].some(task => task.id === taskId)) {
+        return column;
+      }
+    }
+    return null;
   };
 
   const startTimer = (taskId) => {
@@ -88,13 +111,15 @@ const KanbanView = () => {
   };
 
   const updateTaskCompletionTime = (taskId, time) => {
-    const updatedTasks = Object.keys(tasks).reduce((acc, column) => {
-      acc[column] = tasks[column].map(task => 
-        task.id === taskId ? { ...task, completionTime: (task.completionTime || 0) + time } : task
-      );
-      return acc;
-    }, {});
-    setTasks(updatedTasks);
+    setTasks(prevTasks => {
+      const updatedTasks = {};
+      for (const column in prevTasks) {
+        updatedTasks[column] = prevTasks[column].map(task =>
+          task.id === taskId ? { ...task, completionTime: (task.completionTime || 0) + time } : task
+        );
+      }
+      return updatedTasks;
+    });
   };
 
   const getStatusFromColumn = (column) => {
@@ -107,13 +132,15 @@ const KanbanView = () => {
   };
 
   const updateTaskStatus = (taskId, newStatus) => {
-    const updatedTasks = Object.keys(tasks).reduce((acc, column) => {
-      acc[column] = tasks[column].map(task => 
-        task.id === taskId ? { ...task, taskStatus: newStatus } : task
-      );
-      return acc;
-    }, {});
-    setTasks(updatedTasks);
+    setTasks(prevTasks => {
+      const updatedTasks = {};
+      for (const column in prevTasks) {
+        updatedTasks[column] = prevTasks[column].map(task =>
+          task.id === taskId ? { ...task, taskStatus: newStatus } : task
+        );
+      }
+      return updatedTasks;
+    });
   };
 
   const handleStartSprint = () => {
@@ -149,7 +176,7 @@ const KanbanView = () => {
 
   const updateSprintInStorage = (updatedSprint) => {
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const updatedSprints = storedSprints.map(s => 
+    const updatedSprints = storedSprints.map(s =>
       s.id === updatedSprint.id ? updatedSprint : s
     );
     localStorage.setItem('sprints', JSON.stringify(updatedSprints));
@@ -162,13 +189,27 @@ const KanbanView = () => {
   };
 
   const handleSaveTask = (editedTask) => {
-    const updatedTasks = Object.keys(tasks).reduce((acc, column) => {
-      acc[column] = tasks[column].map(task => 
-        task.id === editedTask.id ? editedTask : task
-      );
-      return acc;
-    }, {});
-    setTasks(updatedTasks);
+    setTasks(prevTasks => {
+      const updatedTasks = {};
+      for (const column in prevTasks) {
+        updatedTasks[column] = prevTasks[column].map(task =>
+          task.id === editedTask.id ? editedTask : task
+        );
+      }
+      return updatedTasks;
+    });
+    setShowTaskDetails(false);
+    setSelectedTask(null);
+  };
+
+  const handleDeleteTask = (taskId) => {
+    setTasks(prevTasks => {
+      const updatedTasks = {};
+      for (const column in prevTasks) {
+        updatedTasks[column] = prevTasks[column].filter(task => task.id !== taskId);
+      }
+      return updatedTasks;
+    });
     setShowTaskDetails(false);
     setSelectedTask(null);
   };
@@ -187,19 +228,19 @@ const KanbanView = () => {
       <header className="page-header">
         <h1>Kanban View: {sprint.name}</h1>
         <div className="sprint-controls">
-        {!isSprintActive && sprintStatus !== 'Completed' && (
-          <button onClick={handleStartSprint} className="start-sprint">Start Sprint</button>
-        )}
-        {isSprintActive && !isPaused && (
-          <>
-            <button onClick={handlePauseSprint} className="pause-sprint">Pause Sprint</button>
-            <button onClick={handleEndSprint} className="end-sprint">End Sprint</button>
-          </>
-        )}
-        {isSprintActive && isPaused && (
-          <button onClick={handleResumeSprint} className="resume-sprint">Resume Sprint</button>
-        )}
-      </div>
+          {!isSprintActive && sprintStatus !== 'Completed' && (
+            <button onClick={handleStartSprint} className="start-sprint">Start Sprint</button>
+          )}
+          {isSprintActive && !isPaused && (
+            <>
+              <button onClick={handlePauseSprint} className="pause-sprint">Pause Sprint</button>
+              <button onClick={handleEndSprint} className="end-sprint">End Sprint</button>
+            </>
+          )}
+          {isSprintActive && isPaused && (
+            <button onClick={handleResumeSprint} className="resume-sprint">Resume Sprint</button>
+          )}
+        </div>
       </header>
       <div className="sprint-info">
         <div>Start Date: {sprint.startDate}</div>
@@ -208,313 +249,50 @@ const KanbanView = () => {
           Status: {sprintStatus}
         </div>
       </div>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="kanban-columns">
-          {['todo', 'inProgress', 'done'].map((columnId) => (
-            <div key={columnId} className="kanban-column">
-              <h3 className={`kanban-column-title ${columnId}`}>{columnId === 'todo' ? 'To-Do' : columnId === 'inProgress' ? 'In-Progress' : 'Done'}</h3>
-              <Droppable droppableId={columnId}>
-                {(provided) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="task-list"
-                  >
-                    {tasks[columnId].map((task, index) => (
-                      <Draggable key={task.id} draggableId={task.id} index={index}>
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            onClick={() => handleTaskClick(task)}
-                          >
-                            <TaskCardView 
-                              task={task} 
-                              completionTime={timerRef.current[task.id] ? 
-                                Date.now() - timerRef.current[task.id].startTime + timerRef.current[task.id].elapsed : 
-                                task.completionTime || 0
-                              }
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
+      <div className="kanban-columns">
+        {['todo', 'inProgress', 'done'].map((columnId) => (
+          <div
+            key={columnId}
+            className="kanban-column"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={(e) => handleDrop(e, columnId)}
+          >
+            <h3 className={`kanban-column-title ${columnId}`}>
+              {columnId === 'todo' ? 'To-Do' : columnId === 'inProgress' ? 'In-Progress' : 'Done'}
+            </h3>
+            <div className="task-list">
+              {tasks[columnId].map((task) => (
+                <div
+                  key={task.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, task)}
+                  className="task-card"
+                  onClick={() => handleTaskClick(task)}
+                >
+                  <TaskCardView 
+                    task={task} 
+                    completionTime={timerRef.current[task.id] ? 
+                      Date.now() - timerRef.current[task.id].startTime + timerRef.current[task.id].elapsed : 
+                      task.completionTime || 0
+                    }
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </DragDropContext>
-      {showTaskDetails && selectedTask && (
-        <div className="task-details-overlay">
-          <div className="task-details-container">
-            <SprintTaskDetails
-              task={selectedTask}
-              onSave={handleSaveTask}
-              onClose={handleCloseTaskDetails}
-            />
           </div>
-        </div>
+        ))}
+      </div>
+      {showTaskDetails && selectedTask && (
+        <TaskCardDetails
+          task={selectedTask}
+          onSave={handleSaveTask}
+          onDelete={handleDeleteTask}
+          onClose={handleCloseTaskDetails}
+        />
       )}
     </div>
   );
 };
 
 export default KanbanView;
-
-
-// import React, { useState, useEffect } from 'react';
-// import { useParams } from 'react-router-dom';
-// import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-// import TaskCardView from '../components/TaskCardView';
-// import SprintTaskDetails from '../components/SprintTaskDetails';
-// import './KanbanBoard.css';
-
-// const KanbanBoard = () => {
-//   const { sprintId } = useParams();
-//   const [sprint, setSprint] = useState(null);
-//   const [tasks, setTasks] = useState({
-//     todo: [],
-//     inProgress: [],
-//     done: []
-//   });
-//   const [sprintStatus, setSprintStatus] = useState('Not Started');
-//   const [selectedTask, setSelectedTask] = useState(null);
-//   const [showTaskDetails, setShowTaskDetails] = useState(false);
-//   const [isSprintActive, setIsSprintActive] = useState(false);
-//   const [sprintTimer, setSprintTimer] = useState(null);
-
-//   useEffect(() => {
-//     fetchSprint();
-//   }, [sprintId]);
-
-//   const fetchSprint = () => {
-//     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-//     const foundSprint = storedSprints.find(s => s.id === sprintId);
-//     if (foundSprint) {
-//       setSprint(foundSprint);
-//       setSprintStatus(foundSprint.status || 'Not Started');
-//       initializeTasks(foundSprint.tasks);
-//     }
-//   };
-
-//   const initializeTasks = (sprintTasks) => {
-//     const initialTasks = {
-//       todo: sprintTasks,
-//       inProgress: [],
-//       done: []
-//     };
-//     setTasks(initialTasks);
-//   };
-
-//   const onDragEnd = (result) => {
-//     const { source, destination } = result;
-//     if (!destination) return;
-
-//     const sourceColumn = source.droppableId;
-//     const destColumn = destination.droppableId;
-
-//     const sourceItems = Array.from(tasks[sourceColumn]);
-//     const destItems = Array.from(tasks[destColumn]);
-//     const [removed] = sourceItems.splice(source.index, 1);
-//     destItems.splice(destination.index, 0, removed);
-
-//     setTasks({
-//       ...tasks,
-//       [sourceColumn]: sourceItems,
-//       [destColumn]: destItems
-//     });
-
-//     if (destColumn === 'inProgress' && sourceColumn !== 'inProgress') {
-//       startTimer(removed.id);
-//     } else if (sourceColumn === 'inProgress' && destColumn !== 'inProgress') {
-//       stopTimer(removed.id);
-//     }
-
-//     updateTaskStatus(removed.id, getStatusFromColumn(destColumn));
-//   };
-
-//   const startTimer = (taskId) => {
-//     const updatedTasks = tasks.inProgress.map(task => {
-//       if (task.id === taskId) {
-//         return { ...task, startTime: Date.now() };
-//       }
-//       return task;
-//     });
-//     setTasks(prevTasks => ({ ...prevTasks, inProgress: updatedTasks }));
-//   };
-
-//   const stopTimer = (taskId) => {
-//     const task = tasks.inProgress.find(t => t.id === taskId);
-//     if (task && task.startTime) {
-//       const elapsedTime = Date.now() - task.startTime;
-//       updateTaskCompletionTime(taskId, elapsedTime);
-//     }
-//   };
-
-//   const updateTaskCompletionTime = (taskId, elapsedTime) => {
-//     const updatedTasks = Object.keys(tasks).reduce((acc, column) => {
-//       acc[column] = tasks[column].map(task => {
-//         if (task.id === taskId) {
-//           return { ...task, completionTime: (task.completionTime || 0) + elapsedTime };
-//         }
-//         return task;
-//       });
-//       return acc;
-//     }, {});
-//     setTasks(updatedTasks);
-//   };
-
-//   const handleStartSprint = () => {
-//     setIsSprintActive(true);
-//     setSprintStatus('Active');
-//     const updatedSprint = { ...sprint, status: 'Active' };
-//     updateSprintInStorage(updatedSprint);
-//     setSprintTimer(setInterval(() => {
-//       setSprint(prevSprint => ({ ...prevSprint, elapsedTime: (prevSprint.elapsedTime || 0) + 1000 }));
-//     }, 1000));
-//   };
-
-//   const handlePauseSprint = () => {
-//     clearInterval(sprintTimer);
-//     setIsSprintActive(false);
-//     const updatedSprint = { ...sprint, status: 'Paused' };
-//     updateSprintInStorage(updatedSprint);
-//     setSprintStatus('Paused');
-//   };
-
-//   const handleEndSprint = () => {
-//     clearInterval(sprintTimer);
-//     setIsSprintActive(false);
-//     const updatedSprint = { ...sprint, status: 'Completed' };
-//     updateSprintInStorage(updatedSprint);
-//     setSprintStatus('Completed');
-//   };
-
-//   const handleTaskClick = (task) => {
-//     setSelectedTask(task);
-//     setShowTaskDetails(true);
-//   };
-
-//   const handleSaveTask = (editedTask) => {
-//     const updatedSprint = { ...sprint };
-//     const taskIndex = updatedSprint.tasks.findIndex(t => t.id === editedTask.id);
-//     if (taskIndex !== -1) {
-//       updatedSprint.tasks[taskIndex] = editedTask;
-//       updateSprintInStorage(updatedSprint);
-//       setShowTaskDetails(false);
-//       fetchSprint();
-//     }
-//   };
-
-//   const handleCloseTaskDetails = () => {
-//     setShowTaskDetails(false);
-//     setSelectedTask(null);
-//   };
-
-//   const updateSprintInStorage = (updatedSprint) => {
-//     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-//     const updatedSprints = storedSprints.map(s => 
-//       s.id === updatedSprint.id ? updatedSprint : s
-//     );
-//     localStorage.setItem('sprints', JSON.stringify(updatedSprints));
-//     setSprint(updatedSprint);
-//   };
-
-//   const getStatusFromColumn = (column) => {
-//     switch (column) {
-//       case 'todo': return 'To Do';
-//       case 'inProgress': return 'In Progress';
-//       case 'done': return 'Completed';
-//       default: return 'To Do';
-//     }
-//   };
-
-//   const updateTaskStatus = (taskId, newStatus) => {
-//     const updatedSprint = { ...sprint };
-//     const taskIndex = updatedSprint.tasks.findIndex(t => t.id === taskId);
-//     if (taskIndex !== -1) {
-//       updatedSprint.tasks[taskIndex].status = newStatus;
-//       updateSprintInStorage(updatedSprint);
-//     }
-//   };
-
-//   if (!sprint) {
-//     return <div>Loading...</div>;
-//   }
-
-//   return (
-//     <div className="kanban-board">
-//       <h2>Sprint: {sprint.name}</h2>
-//       <div className="sprint-info">
-//         <div>Start Date: {sprint.startDate}</div>
-//         <div>End Date: {sprint.endDate}</div>
-//         <div className="sprint-status">
-//           Status: <span className={`status-${sprintStatus.toLowerCase().replace(' ', '-')}`}>{sprintStatus}</span>
-//         </div>
-//         {sprintStatus === 'Not Started' && (
-//           <button onClick={handleStartSprint} className="start-sprint">Start Sprint</button>
-//         )}
-//         {sprintStatus === 'Active' && (
-//           <>
-//             <button onClick={handlePauseSprint} className="pause-sprint">Pause Sprint</button>
-//             <button onClick={handleEndSprint} className="end-sprint">End Sprint</button>
-//           </>
-//         )}
-//         {sprintStatus === 'Paused' && (
-//           <button onClick={handleStartSprint} className="start-sprint">Resume Sprint</button>
-//         )}
-//       </div>
-//       <DragDropContext onDragEnd={onDragEnd}>
-//         <div className="kanban-columns">
-//           {['todo', 'inProgress', 'done'].map((columnId) => (
-//             <div key={columnId} className="kanban-column">
-//               <h3 className="kanban-column-title">{columnId === 'todo' ? 'To-Do' : columnId === 'inProgress' ? 'In-Progress' : 'Done'}</h3>
-//               <Droppable droppableId={columnId}>
-//                 {(provided) => (
-//                   <div
-//                     {...provided.droppableProps}
-//                     ref={provided.innerRef}
-//                     className="task-list"
-//                   >
-//                     {tasks[columnId].map((task, index) => (
-//                       <Draggable key={task.id} draggableId={task.id} index={index}>
-//                         {(provided) => (
-//                           <div
-//                             ref={provided.innerRef}
-//                             {...provided.draggableProps}
-//                             {...provided.dragHandleProps}
-//                             onClick={() => handleTaskClick(task)}
-//                           >
-//                             <TaskCardView task={task} />
-//                           </div>
-//                         )}
-//                       </Draggable>
-//                     ))}
-//                     {provided.placeholder}
-//                   </div>
-//                 )}
-//               </Droppable>
-//             </div>
-//           ))}
-//         </div>
-//       </DragDropContext>
-//       {showTaskDetails && selectedTask && (
-//         <div className="task-details-overlay">
-//           <div className="task-details-container">
-//             <SprintTaskDetails
-//               task={selectedTask}
-//               onSave={handleSaveTask}
-//               onClose={handleCloseTaskDetails}
-//             />
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default KanbanBoard;
