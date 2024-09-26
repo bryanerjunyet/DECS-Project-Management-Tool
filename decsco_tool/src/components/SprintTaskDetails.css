@@ -127,37 +127,37 @@
   }
 
   /* Priority styles */
-  .priority-low { background-color: #81c784; color: #1b5e20; }
-  .priority-medium { background-color: #fff176; color: #f57f17; }
-  .priority-high { background-color: #ff8a65; color: #bf360c; }
-  .priority-urgent { background-color: #e57373; color: #b71c1c; }
-
+  .priority-low { background-color: lightgreen; color: darkgreen; }
+  .priority-medium { background-color: lightblue; color: darkblue; }
+  .priority-high { background-color: rgb(255, 219, 152); color: rgb(119, 66, 0); }
+  .priority-urgent { background-color: lightcoral; color: darkred; }
+  
   /* Stage styles */
   .stage-planning,
   .stage-development,
   .stage-testing,
   .stage-integration {
-    background-color: #90caf9;
-    color: #0d47a1;
+    background-color: rgb(75, 75, 118);
+    color: white;
   }
 
   /* Status styles */
-  .status-todo { background-color: #b39ddb; color: #4527a0; }
-  .status-inprogress { background-color: #ffcc80; color: #e65100; }
-  .status-completed { background-color: #a5d6a7; color: #1b5e20; }
+  .status-todo { background-color: rgb(0, 140, 168); color: white; }
+  .status-inprogress { background-color: rgb(255, 157, 0); }
+  .status-completed { background-color: rgb(0, 151, 60); color: white; }
 
   /* Person styles */
   .person-alvin,
   .person-bryan,
   .person-joey,
   .person-shelly {
-    background-color: #fff59d;
-    color: #f57f17;
+    background-color: #fff986;
+    color: rgb(145, 80, 0);
   }
 
   /* Choices.js custom styling */
   .choices__inner {
-    background-color: #fff;
+    background-color: #ffffff;
     border: 1px solid #ccc;
     border-radius: 4px;
     min-height: 44px;
@@ -168,9 +168,9 @@
   }
 
   .choices__list--multiple .choices__item {
-    background-color: #e0e0e0;
+    background-color: #20347a;
     border: 1px solid #ccc;
-    color: #333;
+    color: #ffffff;
   }
 
   .choices__list--multiple .choices__item.is-highlighted {
