@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import TaskCardView from '../components/TaskCardView';
-import TaskCardDetails from '../components/TaskCardDetails';
+import SprintTaskDetails from '../components/SprintTaskDetails';
 import './KanbanView.css';
 
 const KanbanView = () => {
@@ -283,7 +283,7 @@ const KanbanView = () => {
         ))}
       </div>
       {showTaskDetails && selectedTask && (
-        <TaskCardDetails
+        <SprintTaskDetails
           task={selectedTask}
           onSave={handleSaveTask}
           onDelete={handleDeleteTask}
