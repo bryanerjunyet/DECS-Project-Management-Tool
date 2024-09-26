@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Choices from 'choices.js';
 import 'choices.js/public/assets/styles/choices.min.css';
+import './SprintTaskDetails.css';
 
 const SprintTaskDetails = ({ task, onSave, onClose }) => {
   const [editedTask, setEditedTask] = useState(task);

@@ -174,7 +174,7 @@
 
 .task-list {
   min-height: 300px;
-  max-width: fit-content;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
   gap: 15px;

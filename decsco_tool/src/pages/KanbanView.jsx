@@ -269,7 +269,6 @@ const KanbanView = () => {
                   key={task.id}
                   draggable
                   onDragStart={(e) => handleDragStart(e, task)}
-                  className="task-card"
                   onClick={() => handleTaskClick(task)}
                 >
                   <TaskCardView 
