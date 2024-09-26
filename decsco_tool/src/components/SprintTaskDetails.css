@@ -1,188 +1,229 @@
 .sprint-task-details-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
-  .sprint-task-details {
-    background-color: #f0f0f0;
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
+.sprint-task-details {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
 
-  .sprint-task-details h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-  }
+.sprint-task-details h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
 
-  .form-field {
-    margin-bottom: 15px;
-  }
+.form-field {
+  margin-bottom: 15px;
+}
 
-  .form-field label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-  }
+.form-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
 
-  .form-field input[type="text"],
-  .form-field textarea,
-  .form-field select,
-  .form-field input[type="number"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-  }
+.form-field input[type="text"],
+.form-field textarea,
+.form-field select,
+.form-field input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
 
-  .form-field textarea {
-    height: 100px;
-    resize: vertical;
-  }
+.form-field textarea {
+  height: 100px;
+  resize: vertical;
+}
 
-  .form-field select[multiple] {
-    height: auto;
-  }
+.form-field select[multiple] {
+  height: auto;
+}
 
-  .type-of-task {
-    display: flex;
-    gap: 20px;
-  }
+.type-of-task {
+  display: flex;
+  gap: 20px;
+}
 
-  .type-of-task label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
+.type-of-task label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
 
-  .type-of-task input[type="radio"] {
-    margin-right: 5px;
-  }
+.type-of-task input[type="radio"] {
+  margin-right: 5px;
+}
 
-  .slider {
-    width: 100%;
-    margin: 10px 0;
-  }
+.slider {
+  width: 100%;
+  margin: 10px 0;
+}
 
-  .slider-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 5px;
-    color: #777;
-    font-size: 12px;
-  }
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  color: #777;
+  font-size: 12px;
+}
 
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-  }
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
 
-  .save-task,
-  .cancel {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
+.save-task,
+.cancel {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
 
-  .save-task {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px 10px 40px; /* Increased left padding for icon */
-    background-repeat: no-repeat;
-    background-position: 10px center; /* Position icon on the left */
-    background-size: 20px 20px; /* Size of the icon */
-    background-image: url('../utils/confirm_button.png');
-  }
+.save-task {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px 10px 40px;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  background-size: 20px 20px;
+  background-image: url('../utils/confirm_button.png');
+}
 
-  .save-task:hover {
-    background-color: #45a049;
-  }
+.save-task:hover {
+  background-color: #45a049;
+}
 
-  .cancel {
-    background-color: #f44336;
-    color: white;
-  }
+.cancel {
+  background-color: #f44336;
+  color: white;
+}
 
-  .cancel:hover {
-    background-color: #d32f2f;
-  }
+.cancel:hover {
+  background-color: #d32f2f;
+}
 
-  /* Priority styles */
-  .priority-low { background-color: lightgreen; color: darkgreen; }
-  .priority-medium { background-color: lightblue; color: darkblue; }
-  .priority-high { background-color: rgb(255, 219, 152); color: rgb(119, 66, 0); }
-  .priority-urgent { background-color: lightcoral; color: darkred; }
-  
-  /* Stage styles */
-  .stage-planning,
-  .stage-development,
-  .stage-testing,
-  .stage-integration {
-    background-color: rgb(75, 75, 118);
-    color: white;
-  }
+/* Priority styles */
+.priority-low { background-color: lightgreen; color: darkgreen; }
+.priority-medium { background-color: lightblue; color: darkblue; }
+.priority-high { background-color: rgb(255, 219, 152); color: rgb(119, 66, 0); }
+.priority-urgent { background-color: lightcoral; color: darkred; }
 
-  /* Status styles */
-  .status-todo { background-color: rgb(0, 140, 168); color: white; }
-  .status-inprogress { background-color: rgb(255, 157, 0); }
-  .status-completed { background-color: rgb(0, 151, 60); color: white; }
+/* Stage styles */
+.stage-planning,
+.stage-development,
+.stage-testing,
+.stage-integration {
+  background-color: rgb(75, 75, 118);
+  color: white;
+}
 
-  /* Person styles */
-  .person-alvin,
-  .person-bryan,
-  .person-joey,
-  .person-shelly {
-    background-color: #fff986;
-    color: rgb(145, 80, 0);
-  }
+/* Status styles */
+.status-todo { background-color: rgb(0, 140, 168); color: white; }
+.status-inprogress { background-color: rgb(255, 157, 0); }
+.status-completed { background-color: rgb(0, 151, 60); color: white; }
 
-  /* Choices.js custom styling */
-  .choices__inner {
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    min-height: 44px;
-  }
+/* Person styles */
+.person-alvin,
+.person-bryan,
+.person-joey,
+.person-shelly {
+  background-color: #fff986;
+  color: rgb(145, 80, 0);
+}
 
-  .choices__input {
-    background-color: transparent;
-  }
+/* Choices.js custom styling */
+.choices__inner {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 44px;
+}
 
-  .choices__list--multiple .choices__item {
-    background-color: #20347a;
-    border: 1px solid #ccc;
-    color: #ffffff;
-  }
+.choices__input {
+  background-color: transparent;
+}
 
-  .choices__list--multiple .choices__item.is-highlighted {
-    background-color: #d4d4d4;
-    border: 1px solid #aaa;
-  }
+.choices__list--multiple .choices__item {
+  background-color: #20347a;
+  border: 1px solid #ccc;
+  color: #ffffff;
+}
 
-  .choices__list--dropdown {
-    background-color: #fff;
-    border: 1px solid #ccc;
-  }
+.choices__list--multiple .choices__item.is-highlighted {
+  background-color: #d4d4d4;
+  border: 1px solid #aaa;
+}
 
-  .choices__list--dropdown .choices__item--selectable.is-highlighted {
-    background-color: #f5f5f5;
-  }
+.choices__list--dropdown {
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+  background-color: #f5f5f5;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.start-timer,
+.pause-timer,
+.resume-timer,
+.complete-task {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  color: white;
+}
+
+.start-timer {
+  background-color: #4CAF50;
+}
+
+.pause-timer {
+  background-color: #FFC107;
+  color: black;
+}
+
+.resume-timer {
+  background-color: #2196F3;
+}
+
+.complete-task {
+  background-color: #9C27B0;
+}
+
+.start-timer:hover { background-color: #45a049; }
+.pause-timer:hover { background-color: #e6ae00; }
+.resume-timer:hover { background-color: #1e87dc; }
+.complete-task:hover { background-color: #7b1fa2; }

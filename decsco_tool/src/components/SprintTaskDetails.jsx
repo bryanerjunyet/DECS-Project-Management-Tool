@@ -5,10 +5,15 @@ import './SprintTaskDetails.css';
 
 const SprintTaskDetails = ({ task, onSave, onClose }) => {
   const [editedTask, setEditedTask] = useState(task);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(task.completionTime || 0);
   const tagsRef = useRef(null);
+  const timerRef = useRef(null);
+  const startTimeRef = useRef(null);
 
   useEffect(() => {
     setEditedTask(task);
+    setElapsedTime(task.completionTime || 0);
 
     if (tagsRef.current) {
       const allTags = [
@@ -79,7 +84,50 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(editedTask);
+    onSave({ ...editedTask, completionTime: elapsedTime });
+  };
+
+  const startTimer = () => {
+    if (!isTimerRunning) {
+      setIsTimerRunning(true);
+      startTimeRef.current = Date.now() - elapsedTime;
+      timerRef.current = setInterval(() => {
+        setElapsedTime(Date.now() - startTimeRef.current);
+      }, 1000);
+    }
+  };
+
+  const pauseTimer = () => {
+    if (isTimerRunning) {
+      clearInterval(timerRef.current);
+      setIsTimerRunning(false);
+    }
+  };
+
+  const resumeTimer = () => {
+    if (!isTimerRunning) {
+      startTimer();
+    }
+  };
+
+  const completeTask = () => {
+    pauseTimer();
+    setEditedTask(prevTask => ({ ...prevTask, taskStatus: 'COMPLETED' }));
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
+
+  const formatTime = (ms) => {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    return `${hours.toString().padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
   };
 
   return (
@@ -230,15 +278,26 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
           </div>
 
           <div className="form-field">
-            <label htmlFor="completionTime">Completion Time (minutes):</label>
+            <label htmlFor="completionTime">Completion Time:</label>
             <input
-              type="number"
+              type="text"
               id="completionTime"
               name="completionTime"
-              value={Math.round((editedTask.completionTime || 0) / 60000)} // Convert milliseconds to minutes
-              onChange={handleChange}
+              value={formatTime(elapsedTime)}
               readOnly
             />
+          </div>
+
+          <div className="timer-controls">
+            {!isTimerRunning && editedTask.taskStatus !== 'COMPLETED' && (
+              <button type="button" onClick={startTimer} className="start-timer">Start Task</button>
+            )}
+            {isTimerRunning && (
+              <button type="button" onClick={pauseTimer} className="pause-timer">Pause Task</button>
+            )}
+            {editedTask.taskStatus !== 'COMPLETED' && (
+              <button type="button" onClick={completeTask} className="complete-task">Complete Task</button>
+            )}
           </div>
 
           <div className="form-actions">
@@ -252,4 +311,3 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
 };
 
 export default SprintTaskDetails;
-

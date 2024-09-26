@@ -1,16 +1,14 @@
-// KanbanBoard.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './KanbanBoard.css';
 
 const KanbanBoard = () => {
-  const [activeSprints, setActiveSprints] = useState([]);
+  const [sprints, setSprints] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const active = storedSprints.filter(sprint => sprint.status === 'Active');
-    setActiveSprints(active);
+    setSprints(storedSprints);
   }, []);
 
   const handleSprintClick = (sprintId) => {
@@ -22,8 +20,8 @@ const KanbanBoard = () => {
       <header className="page-header">
         <h1>Kanban Board</h1>
       </header>
-      {activeSprints.length === 0 ? (
-        <div className="no-active-sprints">No active sprints found.</div>
+      {sprints.length === 0 ? (
+        <div className="no-sprints">No sprints found.</div>
       ) : (
         <table className="sprint-table">
           <thead>
@@ -35,7 +33,7 @@ const KanbanBoard = () => {
             </tr>
           </thead>
           <tbody>
-            {activeSprints.map((sprint) => (
+            {sprints.map((sprint) => (
               <tr key={sprint.id} onClick={() => handleSprintClick(sprint.id)}>
                 <td>{sprint.name}</td>
                 <td>{sprint.startDate}</td>

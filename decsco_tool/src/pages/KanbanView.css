@@ -80,7 +80,7 @@
   gap: 10px;
 }
 
-.start-sprint, .pause-sprint, .resume-sprint, .end-sprint {
+.start-sprint, .end-sprint {
   padding: 10px 20px 10px 40px;
   border: none;
   border-radius: 5px;
@@ -242,4 +242,26 @@
   .sprint-info > div {
     flex-basis: 100%;
   }
+}
+
+.start-sprint-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.start-sprint-button {
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.start-sprint-button:hover {
+  background-color: #45a049;
 }
