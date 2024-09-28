@@ -191,6 +191,7 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
             <option value="INTEGRATION">INTEGRATION</option>
           </select>
         </div>
+
         <div className="form-field">
           <label htmlFor="taskStatus">Task Status:</label>
           <select

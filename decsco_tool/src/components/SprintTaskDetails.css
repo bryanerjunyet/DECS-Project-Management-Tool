@@ -22,9 +22,15 @@
 }
 
 .sprint-task-details h2 {
+  color: rgb(255, 255, 255);
+  font-size: 35px;
   text-align: center;
-  color: #333;
   margin-bottom: 20px;
+  text-align: center;
+  background-color: #333;
+  padding: 15px;
+  margin: -20px -20px 20px -20px;
+  border-radius: 10px 10px 0 0;
 }
 
 .form-field {
@@ -114,7 +120,7 @@
 }
 
 .save-task:hover {
-  background-color: #45a049;
+  background-color: #357638;
 }
 
 .cancel {
@@ -123,7 +129,7 @@
 }
 
 .cancel:hover {
-  background-color: #d32f2f;
+  background-color: #a72424;
 }
 
 /* Priority styles */
@@ -208,11 +214,21 @@
 
 .start-timer {
   background-color: #4CAF50;
+  padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+  background-repeat: no-repeat;
+  background-position: 10px center; /* Position icon on the left */
+  background-size: 20px 20px; /* Size of the icon */
+  background-image: url('../utils/start_button.png');
 }
 
 .pause-timer {
-  background-color: #FFC107;
-  color: black;
+  background-color: #ffa600;
+  color: rgb(255, 255, 255);
+  padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+  background-repeat: no-repeat;
+  background-position: 10px center; /* Position icon on the left */
+  background-size: 20px 20px; /* Size of the icon */
+  background-image: url('../utils/pause_button.png');
 }
 
 .resume-timer {
@@ -221,9 +237,38 @@
 
 .complete-task {
   background-color: #9C27B0;
+  padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+  background-repeat: no-repeat;
+  background-position: 10px center; /* Position icon on the left */
+  background-size: 20px 20px; /* Size of the icon */
+  background-image: url('../utils/stop_button.png');
 }
 
-.start-timer:hover { background-color: #45a049; }
-.pause-timer:hover { background-color: #e6ae00; }
-.resume-timer:hover { background-color: #1e87dc; }
-.complete-task:hover { background-color: #7b1fa2; }
+.start-timer:hover { background-color: #367c3a; }
+.pause-timer:hover { background-color: #ce8602; }
+.resume-timer:hover { background-color: #1764a3; }
+.complete-task:hover { background-color: #631b82; }
+
+.history-button {
+  margin-left: 430px;
+  align-items: center;
+  padding: 10px;
+  height: 35px;
+  background-color: #fe0000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+  background-repeat: no-repeat;
+  background-position: 10px center; /* Position icon on the left */
+  background-size: 23px 20px; /* Size of the icon */
+  background-image: url('../utils/history_button.png');
+}
+
+.history-button:hover {
+  background-color: #d50101;
+}

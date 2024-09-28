@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import TaskCardView from '../components/TaskCardView';
+import TaskCardDetails from '../components/TaskCardDetails';
 import './SprintBacklog.css';
 
 const SprintBacklog = () => {
   const [productBacklog, setProductBacklog] = useState([]);
   const [sprintBacklog, setSprintBacklog] = useState([]);
   const [currentSprint, setCurrentSprint] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
   const { sprintId } = useParams();
   const navigate = useNavigate();
 
@@ -50,14 +52,12 @@ const SprintBacklog = () => {
 
   const handleSave = () => {
     if (sprintBacklog.length === 0) {
-      // Delete the sprint if it's empty
       const updatedSprints = JSON.parse(localStorage.getItem('sprints')).filter(s => s.id !== sprintId);
       localStorage.setItem('sprints', JSON.stringify(updatedSprints));
       localStorage.setItem('tasks', JSON.stringify([...productBacklog, ...sprintBacklog]));
       alert("Sprint was empty and has been deleted.");
       navigate('/sprint-board');
     } else {
-      // Update the sprint with new tasks
       const updatedSprints = JSON.parse(localStorage.getItem('sprints')).map(s => 
         s.id === sprintId ? { ...s, tasks: sprintBacklog } : s
       );
@@ -68,15 +68,18 @@ const SprintBacklog = () => {
   };
 
   const handleTaskClick = (task) => {
-    // Implement task click behavior if needed
-    console.log('Task clicked:', task);
+    setSelectedTask(task);
+  };
+
+  const handleTaskClose = () => {
+    setSelectedTask(null);
   };
 
   return (
     <div className="sprint-backlog-page">
       <header className="page-header">
-        <h2 className= "sprint-title">Sprint Backlog: {currentSprint?.name}</h2>
-        <button className= "save-sprint-button" onClick={handleSave}>Save Sprint</button>
+        <h2 className="sprint-title">Sprint Backlog: {currentSprint?.name}</h2>
+        <button className="save-sprint-button" onClick={handleSave}>Save Sprint</button>
       </header>
       <div className="sprint-task-selection">
         <div className="task-selection-container">
@@ -94,7 +97,7 @@ const SprintBacklog = () => {
                     draggable
                     onDragStart={(e) => handleDragStart(e, task)}
                   >
-                    <TaskCardView task={task} onClick={handleTaskClick} />
+                    <TaskCardView task={task} onClick={() => handleTaskClick(task)} />
                   </div>
                 ))}
               </div>
@@ -114,7 +117,7 @@ const SprintBacklog = () => {
                     draggable
                     onDragStart={(e) => handleDragStart(e, task)}
                   >
-                    <TaskCardView task={task} onClick={handleTaskClick} />
+                    <TaskCardView task={task} onClick={() => handleTaskClick(task)} />
                   </div>
                 ))}
               </div>
@@ -122,6 +125,13 @@ const SprintBacklog = () => {
           </div>
         </div>
       </div>
+      {selectedTask && (
+        <TaskCardDetails
+          task={selectedTask}
+          onClose={handleTaskClose}
+          readOnly={true}
+        />
+      )}
     </div>
   );
 };

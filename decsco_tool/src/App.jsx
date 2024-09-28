@@ -24,6 +24,7 @@ function App() {
 
   const handleLogin = (loggedInUser) => {
     setUser(loggedInUser);
+    localStorage.setItem('user', JSON.stringify(loggedInUser));
   };
 
   const handleLogout = () => {
@@ -40,14 +41,14 @@ function App() {
             <main className="main-content">
               <Routes>
                 <Route path="/" element={<Navigate to="/sprint-board" />} />
-                <Route path="/product-backlog" element={<ProductBacklog />} />
+                <Route path="/product-backlog" element={<ProductBacklog currentUser={user} />} />
                 <Route path="/task-card-form" element={<TaskCardForm />} />
                 <Route path="/sprint-board" element={<SprintBoard />} />
                 <Route path="/sprint/:sprintId" element={<SprintDetails />} />
                 <Route path="/sprint/:sprintId/backlog" element={<SprintBacklog />} />
                 <Route path="/kanban-board" element={<KanbanBoard />} />
                 <Route path="/kanban-view/:sprintId" element={<KanbanView />} />
-                <Route path="/sprint/:sprintId/task/:taskId" element={<SprintTaskDetails />} />
+                <Route path="/sprint/:sprintId/task/:taskId" element={<SprintTaskDetails currentUser={user} />} />
                 {/* <Route path="*" element={<Navigate to="/sprint-board" />} /> */}
               </Routes>
             </main>
@@ -61,5 +62,6 @@ function App() {
     </Router>
   );
 }
+
 
 export default App;

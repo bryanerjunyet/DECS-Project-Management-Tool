@@ -15,10 +15,19 @@ const KanbanView = () => {
   const [sprintStatus, setSprintStatus] = useState('Not Started');
   const [selectedTask, setSelectedTask] = useState(null);
   const [showTaskDetails, setShowTaskDetails] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     fetchSprint();
+    fetchCurrentUser();
   }, [sprintId]);
+
+  const fetchCurrentUser = () => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) {
+      setCurrentUser(storedUser);
+    }
+  };
 
   const fetchSprint = () => {
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
@@ -146,18 +155,6 @@ const KanbanView = () => {
     setSelectedTask(null);
   };
 
-  const handleDeleteTask = (taskId) => {
-    const updatedTasks = Object.keys(tasks).reduce((acc, column) => {
-      acc[column] = tasks[column].filter(task => task.id !== taskId);
-      return acc;
-    }, {});
-
-    setTasks(updatedTasks);
-    deleteTaskFromStorage(taskId);
-    setShowTaskDetails(false);
-    setSelectedTask(null);
-  };
-
   const updateTaskInStorage = (updatedTask) => {
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
     const updatedSprints = storedSprints.map(s => {
@@ -165,20 +162,6 @@ const KanbanView = () => {
         return {
           ...s,
           tasks: s.tasks.map(t => t.id === updatedTask.id ? updatedTask : t)
-        };
-      }
-      return s;
-    });
-    localStorage.setItem('sprints', JSON.stringify(updatedSprints));
-  };
-
-  const deleteTaskFromStorage = (taskId) => {
-    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const updatedSprints = storedSprints.map(s => {
-      if (s.id === sprintId) {
-        return {
-          ...s,
-          tasks: s.tasks.filter(t => t.id !== taskId)
         };
       }
       return s;
@@ -242,12 +225,12 @@ const KanbanView = () => {
           </div>
         ))}
       </div>
-      {showTaskDetails && selectedTask && (
+      {showTaskDetails && selectedTask && currentUser && (
         <SprintTaskDetails
           task={selectedTask}
           onSave={handleSaveTask}
-          onDelete={handleDeleteTask}
           onClose={handleCloseTaskDetails}
+          currentUser={currentUser}
         />
       )}
     </div>

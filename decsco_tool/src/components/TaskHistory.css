@@ -1,0 +1,68 @@
+.task-history-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+  }
+  
+  .task-history-content {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .task-history-content h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .task-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .task-history-table th,
+  .task-history-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .task-history-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .task-history-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .close-history {
+    display: block;
+    margin: 0 auto;
+    font-size: 15px;
+    padding: 10px 20px;
+    background-color: #595959;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .close-history:hover {
+    background-color: #444444;
+  }

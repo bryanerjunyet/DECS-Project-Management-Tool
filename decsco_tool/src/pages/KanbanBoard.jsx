@@ -22,6 +22,7 @@ const KanbanBoard = () => {
       <header className="page-header">
         <h1>Kanban Board</h1>
       </header>
+      <div className="sprint-table-container">
       {activeSprints.length === 0 ? (
         <div className="no-active-sprints">No active sprints found.</div>
       ) : (
@@ -46,6 +47,7 @@ const KanbanBoard = () => {
           </tbody>
         </table>
       )}
+      </div>
     </div>
   );
 };

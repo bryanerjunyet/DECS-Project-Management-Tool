@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
-import logo from '../utils/decs_logo.png'; // Adjust the path as needed
+import logo from '../utils/decs_logo.png';
 
 const validUsers = [
   { username: 'ErJunYet', password: 'ILoveMonash1' },
@@ -31,8 +31,9 @@ function LoginPage({ onLogin }) {
       (u) => u.username === username && u.password === password
     );
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-      onLogin(user);
+      const userInfo = { username: user.username };
+      localStorage.setItem('user', JSON.stringify(userInfo));
+      onLogin(userInfo);
       navigate('/sprint-board');
     } else {
       setError('Invalid username or password');

@@ -5,12 +5,11 @@ import TaskCardDetails from '../components/TaskCardDetails';
 import FilterSortControls from '../components/FilterSortControls';
 import './ProductBacklog.css';
 
-const ProductBacklog = () => {
+const ProductBacklog = ({ currentUser }) => {
   const [tasks, setTasks] = useState([]);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [showNewTaskForm, setShowNewTaskForm] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-
   const [filters, setFilters] = useState({ tags: [] });
 
   useEffect(() => {
@@ -28,7 +27,16 @@ const ProductBacklog = () => {
   };
 
   const addNewTask = (task) => {
-    const updatedTasks = [...tasks, task];
+    const newTask = {
+      ...task,
+      history: [{
+        staff: currentUser.username,
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString(),
+        activity: 'Created'
+      }]
+    };
+    const updatedTasks = [...tasks, newTask];
     setTasks(updatedTasks);
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
     setShowNewTaskForm(false);
@@ -39,9 +47,27 @@ const ProductBacklog = () => {
   };
 
   const saveTaskDetails = (updatedTask) => {
-    const updatedTasks = tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t));
-    setTasks(updatedTasks);
-    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    const originalTask = tasks.find(t => t.id === updatedTask.id);
+    const hasChanges = JSON.stringify(originalTask) !== JSON.stringify(updatedTask);
+    
+    if (hasChanges) {
+      const taskWithUpdatedHistory = {
+        ...updatedTask,
+        history: [
+          ...(updatedTask.history || []),
+          {
+            staff: currentUser.username,
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString(),
+            activity: 'Edited'
+          }
+        ]
+      };
+      
+      const updatedTasks = tasks.map((t) => (t.id === taskWithUpdatedHistory.id ? taskWithUpdatedHistory : t));
+      setTasks(updatedTasks);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    }
     setSelectedTask(null);
   };
 
@@ -116,7 +142,6 @@ const ProductBacklog = () => {
         </button>
       </header>
 
-      {/* Filter and Sort Controls */}
       <FilterSortControls
         filters={filters}
         setFilters={setFilters}
@@ -125,7 +150,6 @@ const ProductBacklog = () => {
         handleSort={handleSort}
       />
 
-      {/* Task Board */}
       <section className="task-board">
         {filteredTasks.map((task) => (
           <TaskCardView key={task.id} task={task} onClick={() => openTaskDetails(task)} />
@@ -142,6 +166,7 @@ const ProductBacklog = () => {
           onSave={saveTaskDetails}
           onDelete={deleteTask}
           onClose={closeTaskDetails}
+          currentUser={currentUser}
         />
       )}
     </div>

@@ -35,7 +35,7 @@ body {
 
 /* Sidebar Styles */
 .navigation_sidebar {
-    width: 20%;
+    width: 23vw;
     background-color: #333;
     color: white;
     padding: 20px;
@@ -51,9 +51,9 @@ body {
 
 /* Main Content */
 .main-content {
-    margin-left: 20vw; /* Aligns the main content next to the sidebar */
+    margin-left: 23vw; /* Aligns the main content next to the sidebar */
     /* padding: 20px; */
-    width: calc(100vw - 20vw); /* Full width minus sidebar */
+    width: calc(100vw - 23vw); /* Full width minus sidebar */
     background-image: url('./utils/client_background.jpg');
     background-size: cover; /* Ensure the background covers the entire area */
     background-position: center; /* Center the background image */

@@ -35,7 +35,7 @@
   margin: 5px;
   padding: 10px;
   text-align: center;
-  border: 2px solid #acacac;
+  border: 2px solid #ffffff;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -46,7 +46,7 @@
 
 .sprint-info > div:nth-child(1),
 .sprint-info > div:nth-child(2) {
-  background-color: #8B0000;
+  background-color: #b00303;
 }
 
 .sprint-status {
@@ -117,10 +117,10 @@
   background-image: url('../utils/stop_button.png');
 }
 
-.start-sprint:hover { background-color: #45a049; }
-.pause-sprint:hover { background-color: #e6ae00; }
-.resume-sprint:hover { background-color: #1e87dc; }
-.end-sprint:hover { background-color: #d32f2f; }
+.start-sprint:hover { background-color: #38803b; }
+.pause-sprint:hover { background-color: #be8f01; }
+.resume-sprint:hover { background-color: #1869ac; }
+.end-sprint:hover { background-color: #c52c2c; }
 
 .sprint-time {
   font-size: 1.2rem;

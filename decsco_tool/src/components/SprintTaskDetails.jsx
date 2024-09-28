@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Choices from 'choices.js';
 import 'choices.js/public/assets/styles/choices.min.css';
 import './SprintTaskDetails.css';
+import TaskHistory from './TaskHistory';
 
-const SprintTaskDetails = ({ task, onSave, onClose }) => {
+const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
   const [editedTask, setEditedTask] = useState(task);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(task.completionTime || 0);
+  const [showHistory, setShowHistory] = useState(false);
+  const [taskHistory, setTaskHistory] = useState(task.history || []);
   const tagsRef = useRef(null);
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
@@ -14,6 +17,7 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
   useEffect(() => {
     setEditedTask(task);
     setElapsedTime(task.completionTime || 0);
+    setTaskHistory(task.history || []);
 
     if (tagsRef.current) {
       const allTags = [
@@ -56,12 +60,8 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
   }, [task]);
 
   useEffect(() => {
-    const prioritySelect = document.getElementById('priority');
-    const statusSelect = document.getElementById('taskStatus');
-    const personSelect = document.getElementById('personInCharge');
-    const stageSelect = document.getElementById('stageOfTask');
-
-    const applySelectStyling = (select, classPrefix) => {
+    const applySelectStyling = (selectId, classPrefix) => {
+      const select = document.getElementById(selectId);
       if (select) {
         select.addEventListener('change', () => {
           select.className = '';
@@ -71,10 +71,18 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
       }
     };
 
-    applySelectStyling(prioritySelect, 'priority');
-    applySelectStyling(statusSelect, 'status');
-    applySelectStyling(personSelect, 'person');
-    applySelectStyling(stageSelect, 'stage');
+    applySelectStyling('priority', 'priority');
+    applySelectStyling('taskStatus', 'status');
+    applySelectStyling('personInCharge', 'person');
+    applySelectStyling('stageOfTask', 'stage');
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
   }, []);
 
   const handleChange = (e) => {
@@ -82,9 +90,37 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
     setEditedTask(prevTask => ({ ...prevTask, [name]: value }));
   };
 
+  const addHistoryEntry = useCallback((activity) => {
+    const now = new Date();
+    const newEntry = {
+      staff: currentUser.username,
+      date: now.toLocaleDateString(),
+      time: now.toLocaleTimeString(),
+      activity: activity,
+    };
+    console.log(newEntry);
+    setTaskHistory(prevHistory => [...prevHistory, newEntry]);
+  }, [currentUser.username]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ ...editedTask, completionTime: elapsedTime });
+    const hasChanges = JSON.stringify(editedTask) !== JSON.stringify(task);
+    console.log(hasChanges);
+    if (hasChanges) {
+      const updatedHistory = [
+        ...taskHistory,
+        {
+          staff: currentUser.username,
+          date: new Date().toLocaleDateString(),
+          time: new Date().toLocaleTimeString(),
+          activity: 'Edited'
+        }
+      ];
+      setTaskHistory(updatedHistory);
+      onSave({ ...editedTask, completionTime: elapsedTime, history: updatedHistory });
+    } else {
+      onSave({ ...editedTask, completionTime: elapsedTime, history: taskHistory });
+    }
   };
 
   const startTimer = () => {
@@ -94,6 +130,7 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
       timerRef.current = setInterval(() => {
         setElapsedTime(Date.now() - startTimeRef.current);
       }, 1000);
+      addHistoryEntry('In Progress');
     }
   };
 
@@ -113,15 +150,8 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
   const completeTask = () => {
     pauseTimer();
     setEditedTask(prevTask => ({ ...prevTask, taskStatus: 'COMPLETED' }));
+    addHistoryEntry('Completed');
   };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, []);
 
   const formatTime = (ms) => {
     const seconds = Math.floor(ms / 1000);
@@ -133,7 +163,10 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
   return (
     <div className="sprint-task-details-overlay">
       <div className="sprint-task-details">
-        <h2>Sprint Task Details</h2>
+        <h2>
+          Task Details
+        </h2>
+        <button className="history-button" onClick={() => setShowHistory(true)}>History</button>
         <form onSubmit={handleSubmit}>
           <div className="form-field">
             <label htmlFor="name">Task Name:</label>
@@ -306,6 +339,9 @@ const SprintTaskDetails = ({ task, onSave, onClose }) => {
           </div>
         </form>
       </div>
+      {showHistory && (
+        <TaskHistory history={taskHistory} onClose={() => setShowHistory(false)} />
+      )}
     </div>
   );
 };
