@@ -124,12 +124,12 @@
 }
 
 .ready-sprint-btn {
-  background-color: #4CAF50;
+  background-color: #ff0000;
   background-image: url('../utils/confirm_button.png');
 }
 
 .view-sprint-btn {
-  background-color: #3498db;
+  background-color: #ff7518;
   background-image: url('../utils/view_button.png');
 }
 
@@ -140,11 +140,11 @@
 }
 
 .ready-sprint-btn:hover {
-  background-color: #337e37;
+  background-color: #b60000;
 }
 
 .view-sprint-btn:hover {
-  background-color: #2980b9;
+  background-color: rgb(191, 101, 16);
 }
 
 .delete-sprint-round-btn {

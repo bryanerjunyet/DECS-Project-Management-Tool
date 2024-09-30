@@ -14,6 +14,19 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'TO DO':
+        return '#2196F3';
+      case 'IN PROGRESS':
+        return '#FFA500';
+      case 'COMPLETED':
+        return '#4CAF50';
+      default:
+        return '#000000'; // Default color
+    }
+  };
+
   useEffect(() => {
     setEditedTask(task);
     setElapsedTime(task.completionTime || 0);
@@ -66,6 +79,10 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
         select.addEventListener('change', () => {
           select.className = '';
           select.classList.add(`${classPrefix}-${select.value.toLowerCase().replace(' ', '')}`);
+          if (selectId === 'taskStatus') {
+            select.style.backgroundColor = getStatusColor(select.value);
+            select.style.color = 'white';
+          }
         });
         select.dispatchEvent(new Event('change'));
       }
@@ -88,6 +105,11 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditedTask(prevTask => ({ ...prevTask, [name]: value }));
+    if (name === 'taskStatus') {
+      const select = e.target;
+      select.style.backgroundColor = getStatusColor(value);
+      select.style.color = 'white';
+    }
   };
 
   const addHistoryEntry = useCallback((activity) => {
@@ -149,7 +171,19 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
 
   const completeTask = () => {
     pauseTimer();
-    setEditedTask(prevTask => ({ ...prevTask, taskStatus: 'COMPLETED' }));
+    setEditedTask(prevTask => {
+      const updatedTask = { ...prevTask, taskStatus: 'COMPLETED' };
+      // Force immediate update of the select element
+      setTimeout(() => {
+        const taskStatusSelect = document.getElementById('taskStatus');
+        if (taskStatusSelect) {
+          taskStatusSelect.value = 'COMPLETED';
+          taskStatusSelect.style.backgroundColor = getStatusColor('COMPLETED');
+          taskStatusSelect.style.color = 'white';
+        }
+      }, 0);
+      return updatedTask;
+    });
     addHistoryEntry('Completed');
   };
 
@@ -303,6 +337,10 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
               name="taskStatus"
               value={editedTask.taskStatus}
               onChange={handleChange}
+              style={{
+                backgroundColor: getStatusColor(editedTask.taskStatus),
+                color: 'white'
+              }}
             >
               <option value="TO DO">TO DO</option>
               <option value="IN PROGRESS">IN PROGRESS</option>
