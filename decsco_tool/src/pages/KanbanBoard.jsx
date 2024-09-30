@@ -1,4 +1,3 @@
-// KanbanBoard.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './KanbanBoard.css';
@@ -15,6 +14,17 @@ const KanbanBoard = () => {
 
   const handleSprintClick = (sprintId) => {
     navigate(`/kanban-view/${sprintId}`);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Completed':
+        return '#489848'; // Green
+      case 'Active':
+        return '#e3c93a'; // Yellow (using orange for better visibility)
+      default:
+        return '#348fb9'; // Black for any other status
+    }
   };
 
   return (
@@ -41,7 +51,15 @@ const KanbanBoard = () => {
                 <td>{sprint.name}</td>
                 <td>{sprint.startDate}</td>
                 <td>{sprint.endDate}</td>
-                <td>{sprint.status}</td>
+                <td style={{ 
+                  backgroundColor: getStatusColor(sprint.status), 
+                  color: 'white', 
+                  fontWeight: 'bold',
+                  padding: '8px',
+                  borderRadius: '4px'
+                }}>
+                  {sprint.status}
+                </td>
               </tr>
             ))}
           </tbody>

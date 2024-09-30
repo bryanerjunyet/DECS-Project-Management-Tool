@@ -76,6 +76,17 @@ const SprintBoard = () => {
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Completed':
+        return '#489848'; // Green
+      case 'Active':
+        return '#e3c93a'; // Yellow (using orange for better visibility)
+      default:
+        return '#348fb9'; // Black for any other status
+    }
+  };
+
   return (
     <div className="sprint-board">
       <header className="page-header">
@@ -103,7 +114,9 @@ const SprintBoard = () => {
                 <td onClick={() => handleSprintClick(sprint)}>{sprint.name}</td>
                 <td>{sprint.startDate}</td>
                 <td>{sprint.endDate}</td>
-                <td>{sprint.status}</td>
+                <td style={{ backgroundColor: getStatusColor(sprint.status), color: 'white', fontWeight: 'bold' }}>
+                  {sprint.status}
+                </td>
                 <td>
                   <button 
                     className={sprint.status === 'Active' || sprint.status === 'Completed' ? 'view-sprint-btn' : 'ready-sprint-btn'}
