@@ -10,6 +10,7 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
   const [elapsedTime, setElapsedTime] = useState(task.completionTime || 0);
   const [showHistory, setShowHistory] = useState(false);
   const [taskHistory, setTaskHistory] = useState(task.history || []);
+  const [message, setMessage] = useState('');
   const tagsRef = useRef(null);
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
@@ -160,6 +161,9 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
     if (isTimerRunning) {
       clearInterval(timerRef.current);
       setIsTimerRunning(false);
+      const timeLogged = formatTime(elapsedTime - (task.completionTime || 0));
+      setMessage(`You have successfully logged ${timeLogged} of time spent.`);
+      setTimeout(() => setMessage(''), 5000); // Clear message after 5 seconds
     }
   };
 
@@ -185,6 +189,9 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
       return updatedTask;
     });
     addHistoryEntry('Completed');
+    const timeLogged = formatTime(elapsedTime);
+    setMessage(`Task completed! Total time logged: ${timeLogged}`);
+    setTimeout(() => setMessage(''), 5000); // Clear message after 5 seconds
   };
 
   const formatTime = (ms) => {
@@ -197,10 +204,9 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
   return (
     <div className="sprint-task-details-overlay">
       <div className="sprint-task-details">
-        <h2>
-          Task Details
-        </h2>
+        <h2>Task Details</h2>
         <button className="history-button" onClick={() => setShowHistory(true)}>History</button>
+        {message && <div className="message">{message}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-field">
             <label htmlFor="name">Task Name:</label>

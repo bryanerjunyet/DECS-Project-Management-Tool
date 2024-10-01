@@ -272,3 +272,17 @@
 .history-button:hover {
   background-color: #d50101;
 }
+
+.sprint-task-details .history-button {
+  margin-bottom: 15px; /* Add space below the History button */
+}
+
+.sprint-task-details .message {
+  background-color: #e47610;
+  color: white;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}
