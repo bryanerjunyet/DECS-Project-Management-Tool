@@ -3,14 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import logo from '../utils/decs_logo.png';
 
-const validUsers = [
-  { username: 'ErJunYet', password: 'ILoveMonash1' },
-  { username: 'IrdeenaIxora', password: 'ILoveMonash2' },
-  { username: 'ChongSuSuen', password: 'ILoveMonash3' },
-  { username: 'BooYeuRou', password: 'ILoveMonash4' },
-  { username: 'DylanWong', password: 'ILoveMonash5' },
-];
-
 function LoginPage({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -23,10 +15,16 @@ function LoginPage({ onLogin }) {
       onLogin(JSON.parse(user));
       navigate('/sprint-board');
     }
+
+    // Initialize empty validUsers in localStorage if it doesn't exist
+    if (!localStorage.getItem('validUsers')) {
+      localStorage.setItem('validUsers', JSON.stringify([]));
+    }
   }, [navigate, onLogin]);
 
   const handleLogin = (e) => {
     e.preventDefault();
+    const validUsers = JSON.parse(localStorage.getItem('validUsers') || '[]');
     const user = validUsers.find(
       (u) => u.username === username && u.password === password
     );

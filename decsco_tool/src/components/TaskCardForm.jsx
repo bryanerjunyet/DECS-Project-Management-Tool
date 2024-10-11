@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { PICSelection } from './PICManagement';
 import Choices from 'choices.js';
 import 'choices.js/public/assets/styles/choices.min.css';
 import './TaskCardForm.css';
@@ -8,7 +9,7 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
     name: '',
     tags: [],
     description: '',
-    personInCharge: 'Alvin',
+    personInCharge: '',
     priority: 'LOW',
     storyPoint: 1,
     typeOfTask: 'Story',
@@ -101,18 +102,13 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
 
         <div className="form-field">
           <label htmlFor="personInCharge">Person in Charge:</label>
-          <select
-            id="personInCharge"
-            name="personInCharge"
-            value={task.personInCharge}
-            onChange={handleChange}
-            className={`person-${task.personInCharge.toLowerCase()}`}
-          >
-            <option value="Alvin">ALVIN</option>
-            <option value="Bryan">BRYAN</option>
-            <option value="Joey">JOEY</option>
-            <option value="Shelly">SHELLY</option>
-          </select>
+            <PICSelection
+              id="personInCharge"
+              name="personInCharge"
+              value={task.personInCharge}
+              onChange={handleChange}
+              className="person"
+            />
         </div>
 
         <div className="form-field">

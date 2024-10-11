@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { PICSelection } from './PICManagement';
 import Choices from 'choices.js';
 import 'choices.js/public/assets/styles/choices.min.css';
 import './SprintTaskDetails.css';
@@ -250,17 +251,13 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
 
           <div className="form-field">
             <label htmlFor="personInCharge">Person in Charge:</label>
-            <select
-              id="personInCharge"
-              name="personInCharge"
-              value={editedTask.personInCharge}
-              onChange={handleChange}
-            >
-              <option value="Alvin">ALVIN</option>
-              <option value="Bryan">BRYAN</option>
-              <option value="Joey">JOEY</option>
-              <option value="Shelly">SHELLY</option>
-            </select>
+              <PICSelection
+                id="personInCharge"
+                name="personInCharge"
+                value={editedTask.personInCharge}
+                onChange={handleChange}
+                className="person"
+              />
           </div>
 
           <div className="form-field">

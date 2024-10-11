@@ -153,10 +153,7 @@
 .status-completed { background-color: rgb(0, 151, 60); color: white; }
 
 /* Person styles */
-.person-alvin,
-.person-bryan,
-.person-joey,
-.person-shelly {
+.person {
   background-color: #fff986;
   color: rgb(145, 80, 0);
 }

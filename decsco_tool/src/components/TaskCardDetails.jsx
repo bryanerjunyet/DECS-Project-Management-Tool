@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { PICSelection } from './PICManagement';
 import Choices from 'choices.js';
 import 'choices.js/public/assets/styles/choices.min.css';
 import './TaskCardDetails.css';
@@ -136,24 +137,19 @@ const TaskCardDetails = ({ task, onSave, onDelete, onClose, readOnly, currentUse
 
           <div className="form-field">
             <label htmlFor="personInCharge">Person in Charge:</label>
-            {readOnly ? (
-              <div id="personInCharge" className={`person-${editedTask.personInCharge.toLowerCase()}`}>
-                {editedTask.personInCharge}
-              </div>
-            ) : (
-              <select
-                id="personInCharge"
-                name="personInCharge"
-                value={editedTask.personInCharge}
-                onChange={handleChange}
-                className={`person-${editedTask.personInCharge.toLowerCase()}`}
-              >
-                <option value="Alvin">ALVIN</option>
-                <option value="Bryan">BRYAN</option>
-                <option value="Joey">JOEY</option>
-                <option value="Shelly">SHELLY</option>
-              </select>
-            )}
+              {readOnly ? (
+                <div id="personInCharge" className="person">
+                  {editedTask.personInCharge}
+                </div>
+              ) : (
+                <PICSelection
+                  id="personInCharge"
+                  name="personInCharge"
+                  value={editedTask.personInCharge}
+                  onChange={handleChange}
+                  className="person"
+                />
+              )}
           </div>
 
           <div className="form-field">
