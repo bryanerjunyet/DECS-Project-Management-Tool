@@ -7,14 +7,12 @@ import TaskHistory from './TaskHistory';
 
 const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
   const [editedTask, setEditedTask] = useState(task);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
-  const [elapsedTime, setElapsedTime] = useState(task.completionTime || 0);
+  const [completionTime, setCompletionTime] = useState(task.completionTime || 0);
+  const [manualTime, setManualTime] = useState('');
   const [showHistory, setShowHistory] = useState(false);
   const [taskHistory, setTaskHistory] = useState(task.history || []);
   const [message, setMessage] = useState('');
   const tagsRef = useRef(null);
-  const timerRef = useRef(null);
-  const startTimeRef = useRef(null);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -25,13 +23,13 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
       case 'COMPLETED':
         return '#4CAF50';
       default:
-        return '#000000'; // Default color
+        return '#000000';
     }
   };
 
   useEffect(() => {
     setEditedTask(task);
-    setElapsedTime(task.completionTime || 0);
+    setCompletionTime(task.completionTime || 0);
     setTaskHistory(task.history || []);
 
     if (tagsRef.current) {
@@ -96,14 +94,6 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
     applySelectStyling('stageOfTask', 'stage');
   }, []);
 
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditedTask(prevTask => ({ ...prevTask, [name]: value }));
@@ -111,6 +101,29 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
       const select = e.target;
       select.style.backgroundColor = getStatusColor(value);
       select.style.color = 'white';
+    }
+  };
+
+  const handleManualTimeChange = (e) => {
+    setManualTime(e.target.value);
+  };
+
+  const addTime = () => {
+    if (manualTime) {
+      const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+      if (timeRegex.test(manualTime)) {
+        const [hours, minutes] = manualTime.split(':').map(Number);
+        const addedTimeInMs = (hours * 3600 + minutes * 60) * 1000;
+        const newCompletionTime = completionTime + addedTimeInMs;
+        setCompletionTime(newCompletionTime);
+        setEditedTask(prevTask => ({ ...prevTask, completionTime: newCompletionTime }));
+        addHistoryEntry(`In progress for ${manualTime}`);
+        setManualTime('');
+        setMessage(`Successfully added ${manualTime} to completion time.`);
+      } else {
+        setMessage('Invalid time format. Please use HH:MM format.');
+      }
+      setTimeout(() => setMessage(''), 5000);
     }
   };
 
@@ -122,14 +135,12 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
       time: now.toLocaleTimeString(),
       activity: activity,
     };
-    console.log(newEntry);
     setTaskHistory(prevHistory => [...prevHistory, newEntry]);
   }, [currentUser.username]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const hasChanges = JSON.stringify(editedTask) !== JSON.stringify(task);
-    console.log(hasChanges);
     if (hasChanges) {
       const updatedHistory = [
         ...taskHistory,
@@ -141,65 +152,17 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
         }
       ];
       setTaskHistory(updatedHistory);
-      onSave({ ...editedTask, completionTime: elapsedTime, history: updatedHistory });
+      onSave({ ...editedTask, completionTime, history: updatedHistory });
     } else {
-      onSave({ ...editedTask, completionTime: elapsedTime, history: taskHistory });
+      onSave({ ...editedTask, completionTime, history: taskHistory });
     }
-  };
-
-  const startTimer = () => {
-    if (!isTimerRunning) {
-      setIsTimerRunning(true);
-      startTimeRef.current = Date.now() - elapsedTime;
-      timerRef.current = setInterval(() => {
-        setElapsedTime(Date.now() - startTimeRef.current);
-      }, 1000);
-      addHistoryEntry('In Progress');
-    }
-  };
-
-  const pauseTimer = () => {
-    if (isTimerRunning) {
-      clearInterval(timerRef.current);
-      setIsTimerRunning(false);
-      const timeLogged = formatTime(elapsedTime - (task.completionTime || 0));
-      setMessage(`You have successfully logged ${timeLogged} of time spent.`);
-      setTimeout(() => setMessage(''), 5000); // Clear message after 5 seconds
-    }
-  };
-
-  const resumeTimer = () => {
-    if (!isTimerRunning) {
-      startTimer();
-    }
-  };
-
-  const completeTask = () => {
-    pauseTimer();
-    setEditedTask(prevTask => {
-      const updatedTask = { ...prevTask, taskStatus: 'COMPLETED' };
-      // Force immediate update of the select element
-      setTimeout(() => {
-        const taskStatusSelect = document.getElementById('taskStatus');
-        if (taskStatusSelect) {
-          taskStatusSelect.value = 'COMPLETED';
-          taskStatusSelect.style.backgroundColor = getStatusColor('COMPLETED');
-          taskStatusSelect.style.color = 'white';
-        }
-      }, 0);
-      return updatedTask;
-    });
-    addHistoryEntry('Completed');
-    const timeLogged = formatTime(elapsedTime);
-    setMessage(`Task completed! Total time logged: ${timeLogged}`);
-    setTimeout(() => setMessage(''), 5000); // Clear message after 5 seconds
   };
 
   const formatTime = (ms) => {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
-    return `${hours.toString().padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
+    return `${hours.toString().padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}`;
   };
 
   return (
@@ -251,13 +214,13 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
 
           <div className="form-field">
             <label htmlFor="personInCharge">Person in Charge:</label>
-              <PICSelection
-                id="personInCharge"
-                name="personInCharge"
-                value={editedTask.personInCharge}
-                onChange={handleChange}
-                className="person"
-              />
+            <PICSelection
+              id="personInCharge"
+              name="personInCharge"
+              value={editedTask.personInCharge}
+              onChange={handleChange}
+              className="person"
+            />
           </div>
 
           <div className="form-field">
@@ -357,21 +320,22 @@ const SprintTaskDetails = ({ task, onSave, onClose, currentUser }) => {
               type="text"
               id="completionTime"
               name="completionTime"
-              value={formatTime(elapsedTime)}
+              value={formatTime(completionTime)}
               readOnly
             />
           </div>
 
-          <div className="timer-controls">
-            {!isTimerRunning && editedTask.taskStatus !== 'COMPLETED' && (
-              <button type="button" onClick={startTimer} className="start-timer">Start Task</button>
-            )}
-            {isTimerRunning && (
-              <button type="button" onClick={pauseTimer} className="pause-timer">Pause Task</button>
-            )}
-            {editedTask.taskStatus !== 'COMPLETED' && (
-              <button type="button" onClick={completeTask} className="complete-task">Complete Task</button>
-            )}
+          <div className="form-field">
+            <label htmlFor="manualTime">Add Time (HH:MM):</label>
+            <input
+              type="text"
+              id="manualTime"
+              name="manualTime"
+              value={manualTime}
+              onChange={handleManualTimeChange}
+              placeholder="HH:MM"
+            />
+            <button type="button" onClick={addTime} className="add-time-button">Add Time</button>
           </div>
 
           <div className="form-actions">
