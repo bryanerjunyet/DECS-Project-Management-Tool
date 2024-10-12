@@ -16,11 +16,22 @@ const KanbanView = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchSprint();
     fetchCurrentUser();
   }, [sprintId]);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 2000); // 2 seconds
+
+      return () => clearTimeout(timer); // Cleanup the timer on component unmount
+    }
+  }, [error]);
 
   const fetchCurrentUser = () => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -117,14 +128,40 @@ const KanbanView = () => {
     localStorage.setItem('sprints', JSON.stringify(updatedSprints));
   };
 
+  
   const handleStartSprint = () => {
+    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
+    const activeSprint = storedSprints.find(s => s.status === 'Active');
+
+    if (activeSprint && activeSprint.id !== sprintId) {
+      setError(`Cannot start this sprint. Sprint "${activeSprint.name}" is currently active.`);
+      return;
+    }
+
+    const updatedSprints = storedSprints.map(s => {
+      if (s.id === sprintId) {
+        return { ...s, status: 'Active' };
+      }
+      if (s.status === 'Active') {
+        return { ...s, status: 'Not started' };
+      }
+      return s;
+    });
+
+    localStorage.setItem('sprints', JSON.stringify(updatedSprints));
     setSprintStatus('Active');
-    updateSprintStatus('Active');
+    setSprint({ ...sprint, status: 'Active' });
+    setError(null);
   };
 
   const handleEndSprint = () => {
+    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
+    const updatedSprints = storedSprints.map(s =>
+      s.id === sprintId ? { ...s, status: 'Completed' } : s
+    );
+    localStorage.setItem('sprints', JSON.stringify(updatedSprints));
     setSprintStatus('Completed');
-    updateSprintStatus('Completed');
+    setSprint({ ...sprint, status: 'Completed' });
   };
 
   const updateSprintStatus = (status) => {
@@ -178,8 +215,9 @@ const KanbanView = () => {
     return <div>Loading...</div>;
   }
 
+  const isCompleted = sprintStatus === 'Completed';
   return (
-    <div className="kanban-view">
+    <div className={`kanban-view ${isCompleted ? 'completed-sprint' : ''}`}>
       <header className="page-header">
         <h1>Kanban View: {sprint.name}</h1>
         <div className="sprint-controls">
@@ -191,9 +229,10 @@ const KanbanView = () => {
           )}
         </div>
       </header>
+      {error && <div className={`error-sprint ${error ? 'show' : ''}`}>{error}</div>}
       <div className="sprint-info">
-        <div>Start Date: {sprint.startDate}</div>
-        <div>End Date: {sprint.endDate}</div>
+        <div className="date-info">Start Date: {sprint.startDate}</div>
+        <div className="date-info">End Date: {sprint.endDate}</div>
         <div className={`sprint-status status-${sprintStatus.toLowerCase().replace(' ', '-')}`}>
           Status: {sprintStatus}
         </div>
@@ -202,7 +241,7 @@ const KanbanView = () => {
         {['todo', 'inProgress', 'done'].map((columnId) => (
           <div
             key={columnId}
-            className="kanban-column"
+            className={`kanban-column ${isCompleted ? 'completed' : ''}`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, columnId)}

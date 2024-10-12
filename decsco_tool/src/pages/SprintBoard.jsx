@@ -18,13 +18,21 @@ const SprintBoard = () => {
 
   const loadSprints = () => {
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
+    const today = new Date().toISOString().split('T')[0];
+  
+    // Check if there are any active sprints
+    const hasActiveSprint = storedSprints.some(sprint => sprint.status === 'Active');
+  
     const updatedSprints = storedSprints.map(sprint => {
-      const today = new Date().toISOString().split('T')[0];
       if (sprint.status !== 'Completed' && sprint.startDate <= today) {
-        return { ...sprint, status: 'Active' };
+        // Only set to Active if there are no other active sprints
+        if (!hasActiveSprint) {
+          return { ...sprint, status: 'Active' };
+        }
       }
       return sprint;
     });
+  
     setSprints(updatedSprints);
     updateLocalStorage(updatedSprints);
   };

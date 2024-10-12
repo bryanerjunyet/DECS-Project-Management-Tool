@@ -20,6 +20,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: stretch;
+  margin-top: 20px;
   margin-bottom: 20px;
   margin-left: 20px;
   margin-right: 20px;
@@ -44,8 +45,7 @@
   color: white;
 }
 
-.sprint-info > div:nth-child(1),
-.sprint-info > div:nth-child(2) {
+.date-info {
   background-color: #b00303;
 }
 
@@ -264,4 +264,32 @@
 
 .start-sprint-button:hover {
   background-color: #45a049;
+}
+
+.error-sprint {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #f44336; /* Red background */
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Ensure it is on top of other elements */
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.error-sprint.show {
+  opacity: 1;
+}
+
+.completed-sprint .date-info,
+.completed-sprint .kanban-column-title {
+  background-color: #808080; /* Grey color */
+}
+
+.completed-sprint .kanban-column {
+  background-color: #f0f0f0; /* Light grey background */
 }
