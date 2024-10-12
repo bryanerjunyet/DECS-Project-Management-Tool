@@ -7,17 +7,47 @@ function TeamBoard() {
   const [newStaff, setNewStaff] = useState({ username: '', email: '', password: '' });
 
   useEffect(() => {
-    const loadStaffData = () => {
-      const validUsers = JSON.parse(localStorage.getItem('validUsers') || '[]');
-      const staffWithEmails = validUsers.map(user => ({
-        username: user.username,
-        email: user.email || `${user.username.toLowerCase()}@gmail.com`
-      }));
-      setStaff(staffWithEmails);
-    };
-
     loadStaffData();
   }, []);
+
+  const loadStaffData = () => {
+    const validUsers = JSON.parse(localStorage.getItem('validUsers') || '[]');
+    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
+    console.log(storedSprints);
+    
+    const staffWithWorkingHours = validUsers.map(user => {
+      let totalWorkingTime = 0;
+
+      storedSprints.forEach(sprint => {
+        const sprintTasks = sprint.tasks || [];
+        console.log(sprintTasks);
+        const userTasks = sprintTasks.filter(task => task.personInCharge === user.username);
+        console.log(userTasks);
+        userTasks.forEach(task => {
+          totalWorkingTime += task.completionTime || 0;
+          console.log(totalWorkingTime);
+        });
+      });
+      
+      return {
+        username: user.username,
+        email: user.email || `${user.username.toLowerCase()}@gmail.com`,
+        totalWorkingHours: formatTime(totalWorkingTime)
+      };
+    });
+
+    console.log('Checking here', staffWithWorkingHours);
+    
+    setStaff(staffWithWorkingHours);
+  };
+
+  const formatTime = (ms) => {
+    console.log('ms', ms);
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
 
   const handleAddStaff = () => {
     setIsModalOpen(true);
@@ -28,7 +58,8 @@ function TeamBoard() {
       // Update staff state
       const updatedStaff = [...staff, { 
         username: newStaff.username, 
-        email: newStaff.email 
+        email: newStaff.email,
+        totalWorkingHours: '0h 0m 0s'
       }];
       setStaff(updatedStaff);
       
@@ -51,6 +82,7 @@ function TeamBoard() {
       <header className="page-header">
         <h1>Team Board</h1>
         <button className="add-staff-button" onClick={handleAddStaff}>+ Add Staff</button>
+        {/* <button className="refresh-button" onClick={loadStaffData}>Refresh Data</button> */}
       </header>
       <div className="team-table-container">
         {staff.length > 0 ? (
@@ -59,6 +91,7 @@ function TeamBoard() {
               <tr>
                 <th>Staff</th>
                 <th>Email</th>
+                <th>Total Working Hours</th>
               </tr>
             </thead>
             <tbody>
@@ -66,12 +99,13 @@ function TeamBoard() {
                 <tr key={index}>
                   <td>{member.username}</td>
                   <td>{member.email}</td>
+                  <td>{member.totalWorkingHours}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p>No staff members yet. Add some using the button below!</p>
+          <p>No staff members yet. Add some using the button above!</p>
         )}
       </div>
 

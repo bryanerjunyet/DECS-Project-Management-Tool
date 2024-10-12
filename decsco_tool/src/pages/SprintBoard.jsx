@@ -19,6 +19,7 @@ const SprintBoard = () => {
   const loadSprints = () => {
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
     const today = new Date().toISOString().split('T')[0];
+    console.log(storedSprints);
   
     // Check if there are any active sprints
     const hasActiveSprint = storedSprints.some(sprint => sprint.status === 'Active');

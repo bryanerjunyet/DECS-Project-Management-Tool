@@ -75,15 +75,14 @@
   max-width: 850px;
   border-collapse: separate;
   border-spacing: 0;
-  border: 1px solid rgb(0, 0, 0);
   background: rgb(255, 255, 255);
   border-radius: 15px;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .sprint-table th,
 .sprint-table td {
-  border: 1px solid rgb(0, 0, 0);
   padding: 15px;
   text-align: left;
   font-size: 20px;
@@ -94,8 +93,13 @@
 
 .sprint-table th {
   background: rgb(22, 45, 105);
+  border: 1px solid rgb(204, 204, 204);
   color: rgb(255, 255, 255);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sprint-table td {
+  border: 1px solid rgb(204, 204, 204);
 }
 
 .sprint-table tbody tr {

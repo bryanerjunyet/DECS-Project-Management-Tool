@@ -34,16 +34,21 @@
   
   .team-table {
     width: 100%;
+    max-width: 850px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: rgb(255, 255, 255);
     border-radius: 15px;
-    border-collapse: collapse;
-    background-color: white;
+    overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
   
   .team-table th,
   .team-table td {
-    padding: 12px 15px;
+    border: 1px solid rgb(204, 204, 204);
+    padding: 10px;
     text-align: left;
+    font-size: 18px;
   }
   
   .team-table th {
