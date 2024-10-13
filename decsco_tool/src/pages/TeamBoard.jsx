@@ -1,31 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import './TeamBoard.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 function TeamBoard() {
   const [staff, setStaff] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newStaff, setNewStaff] = useState({ username: '', email: '', password: '' });
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   useEffect(() => {
     loadStaffData();
-  }, []);
+  }, [startDate, endDate]);
 
   const loadStaffData = () => {
     const validUsers = JSON.parse(localStorage.getItem('validUsers') || '[]');
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    console.log(storedSprints);
     
     const staffWithWorkingHours = validUsers.map(user => {
       let totalWorkingTime = 0;
 
       storedSprints.forEach(sprint => {
         const sprintTasks = sprint.tasks || [];
-        console.log(sprintTasks);
-        const userTasks = sprintTasks.filter(task => task.personInCharge === user.username);
-        console.log(userTasks);
-        userTasks.forEach(task => {
-          totalWorkingTime += task.completionTime || 0;
-          console.log(totalWorkingTime);
+        sprintTasks.forEach(task => {
+          if (task.personInCharge === user.username) {
+            task.history.forEach(historyEntry => {
+              if (isWithinDateRange(historyEntry.date) && historyEntry.activity.startsWith('In progress for')) {
+                const timeString = historyEntry.activity.split('In progress for ')[1];
+                totalWorkingTime += convertTimeStringToMs(timeString);
+              }
+            });
+          }
         });
       });
       
@@ -35,14 +41,22 @@ function TeamBoard() {
         totalWorkingHours: formatTime(totalWorkingTime)
       };
     });
-
-    console.log('Checking here', staffWithWorkingHours);
     
     setStaff(staffWithWorkingHours);
   };
 
+  const isWithinDateRange = (dateString) => {
+    if (!startDate || !endDate) return true;
+    const date = new Date(dateString);
+    return date >= startDate && date <= endDate;
+  };
+
+  const convertTimeStringToMs = (timeString) => {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return (hours * 3600 + minutes * 60) * 1000;
+  };
+
   const formatTime = (ms) => {
-    console.log('ms', ms);
     const hours = Math.floor(ms / (1000 * 60 * 60));
     const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((ms % (1000 * 60)) / 1000);
@@ -55,7 +69,6 @@ function TeamBoard() {
 
   const handleSave = () => {
     if (newStaff.username && newStaff.email && newStaff.password) {
-      // Update staff state
       const updatedStaff = [...staff, { 
         username: newStaff.username, 
         email: newStaff.email,
@@ -63,7 +76,6 @@ function TeamBoard() {
       }];
       setStaff(updatedStaff);
       
-      // Update validUsers in localStorage
       const existingUsers = JSON.parse(localStorage.getItem('validUsers') || '[]');
       const updatedUsers = [...existingUsers, { 
         username: newStaff.username, 
@@ -82,8 +94,27 @@ function TeamBoard() {
       <header className="page-header">
         <h1>Team Board</h1>
         <button className="add-staff-button" onClick={handleAddStaff}>+ Add Staff</button>
-        {/* <button className="refresh-button" onClick={loadStaffData}>Refresh Data</button> */}
       </header>
+      <div className="date-filter">
+        <DatePicker
+          selected={startDate}
+          onChange={date => setStartDate(date)}
+          selectsStart
+          startDate={startDate}
+          endDate={endDate}
+          placeholderText="Start Date "
+        />
+        <div className="filter-icon"></div>
+        <DatePicker
+          selected={endDate}
+          onChange={date => setEndDate(date)}
+          selectsEnd
+          startDate={startDate}
+          endDate={endDate}
+          minDate={startDate}
+          placeholderText="End Date "
+        />
+      </div>
       <div className="team-table-container">
         {staff.length > 0 ? (
           <table className="team-table">
@@ -91,7 +122,7 @@ function TeamBoard() {
               <tr>
                 <th>Staff</th>
                 <th>Email</th>
-                <th>Total Working Hours</th>
+                <th>Working Hours</th>
               </tr>
             </thead>
             <tbody>
