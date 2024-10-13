@@ -164,3 +164,59 @@
     border: 1.5px solid rgb(255, 255, 255);
     border-radius: 3px;
   }
+
+  .delete-staff-btn {
+    position: absolute;
+    height: 40px;
+    right: 25px;
+    background-color: #ff0000;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 10px 20px 10px 22px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    background-size: 20px 25px;
+    background-image: url('../utils/delete_button.png');
+  }
+  
+  .delete-staff-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    border-color: #ffffff;
+  }
+  
+  .team-table td {
+    position: relative; /* Make the cell a positioning context */
+  }
+  
+  .delete-staff-round-btn {
+    position: absolute; /* Position the button absolutely within the cell */
+    right: 10px; /* Adjust the distance from the right edge */
+    top: 50%; /* Center the button vertically */
+    transform: translateY(-50%); /* Adjust for vertical centering */
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    vertical-align: middle;
+  }
+  
+  .delete-staff-round-btn:hover {
+    background-color: #ce0404;
+    transform: scale(1.1) translateY(-50%); /* Maintain vertical centering on hover */
+  }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './TeamBoard.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import DeleteModal from '../components/DeleteModal';
 
 function TeamBoard() {
   const [staff, setStaff] = useState([]);
@@ -9,6 +10,9 @@ function TeamBoard() {
   const [newStaff, setNewStaff] = useState({ username: '', email: '', password: '' });
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [showDeleteButtons, setShowDeleteButtons] = useState(false);
+  const [staffToDelete, setStaffToDelete] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     loadStaffData();
@@ -24,14 +28,12 @@ function TeamBoard() {
       storedSprints.forEach(sprint => {
         const sprintTasks = sprint.tasks || [];
         sprintTasks.forEach(task => {
-          if (task.personInCharge === user.username) {
-            task.history.forEach(historyEntry => {
-              if (isWithinDateRange(historyEntry.date) && historyEntry.activity.startsWith('In progress for')) {
-                const timeString = historyEntry.activity.split('In progress for ')[1];
-                totalWorkingTime += convertTimeStringToMs(timeString);
-              }
-            });
-          }
+          task.history.forEach(historyEntry => {
+            if (isWithinDateRange(historyEntry.date) && historyEntry.activity.startsWith('In progress for') && historyEntry.staff == user.username) {
+              const timeString = historyEntry.activity.split('In progress for ')[1];
+              totalWorkingTime += convertTimeStringToMs(timeString);
+            }
+          });
         });
       });
       
@@ -89,6 +91,36 @@ function TeamBoard() {
     }
   };
 
+
+  const toggleDeleteButtons = () => {
+    setShowDeleteButtons(!showDeleteButtons);
+  };
+
+  const handleDeleteClick = (staffMember) => {
+    setStaffToDelete(staffMember);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (staffToDelete) {
+      const updatedStaff = staff.filter(member => member.username !== staffToDelete.username);
+      setStaff(updatedStaff);
+      
+      const existingUsers = JSON.parse(localStorage.getItem('validUsers') || '[]');
+      const updatedUsers = existingUsers.filter(user => user.username !== staffToDelete.username);
+      localStorage.setItem('validUsers', JSON.stringify(updatedUsers));
+      
+      setStaffToDelete(null);
+      setIsDeleteModalOpen(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setStaffToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+
+
   return (
     <div className="team-board">
       <header className="page-header">
@@ -116,28 +148,34 @@ function TeamBoard() {
         />
       </div>
       <div className="team-table-container">
-        {staff.length > 0 ? (
-          <table className="team-table">
-            <thead>
-              <tr>
-                <th>Staff</th>
-                <th>Email</th>
-                <th>Working Hours</th>
+        <button className="delete-staff-btn" onClick={toggleDeleteButtons}>
+          {showDeleteButtons}
+        </button>
+        <table className="team-table">
+          <thead>
+            <tr>
+              <th>Staff</th>
+              <th>Email</th>
+              <th>Working Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            {staff.map((member, index) => (
+              <tr key={index}>
+                <td>
+                  {member.username}
+                  {showDeleteButtons && (
+                    <button className="delete-staff-round-btn" onClick={() => handleDeleteClick(member)}>
+                      -
+                    </button>
+                  )}
+                </td>
+                <td>{member.email}</td>
+                <td>{member.totalWorkingHours}</td>
               </tr>
-            </thead>
-            <tbody>
-              {staff.map((member, index) => (
-                <tr key={index}>
-                  <td>{member.username}</td>
-                  <td>{member.email}</td>
-                  <td>{member.totalWorkingHours}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No staff members yet. Add some using the button above!</p>
-        )}
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {isModalOpen && (
@@ -168,6 +206,14 @@ function TeamBoard() {
             </div>
           </div>
         </div>
+      )}
+
+      {isDeleteModalOpen && (
+        <DeleteModal
+          staff={staffToDelete}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
       )}
     </div>
   );
