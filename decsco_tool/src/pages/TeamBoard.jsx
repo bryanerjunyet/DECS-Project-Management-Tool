@@ -4,8 +4,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import DeleteModal from '../components/DeleteModal';
 import GraphModal from '../components/GraphModal';
+import StaffDetails from '../components/StaffDetails';
 
-function TeamBoard() {
+function TeamBoard({ isAdmin, currentUser }) {
   const [staff, setStaff] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newStaff, setNewStaff] = useState({ username: '', email: '', password: '' });
@@ -17,23 +18,27 @@ function TeamBoard() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isGraphModalOpen, setIsGraphModalOpen] = useState(false);
   const [selectedStaffForGraph, setSelectedStaffForGraph] = useState(null);
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  const [isStaffDetailsOpen, setIsStaffDetailsOpen] = useState(false);
 
   useEffect(() => {
     loadStaffData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, isAdmin, currentUser]);
 
   const loadStaffData = () => {
     const validUsers = JSON.parse(localStorage.getItem('validUsers') || '[]');
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
     
-    const staffWithWorkingHours = validUsers.map(user => {
+    let staffToDisplay = isAdmin ? validUsers : validUsers.filter(user => user.username === currentUser.username);
+
+    const staffWithWorkingHours = staffToDisplay.map(user => {
       let totalWorkingTime = 0;
 
       storedSprints.forEach(sprint => {
         const sprintTasks = sprint.tasks || [];
         sprintTasks.forEach(task => {
           task.history.forEach(historyEntry => {
-            if (isWithinDateRange(historyEntry.date) && historyEntry.activity.startsWith('In progress for') && historyEntry.staff == user.username) {
+            if (isWithinDateRange(historyEntry.date) && historyEntry.activity.startsWith('In progress for') && historyEntry.staff === user.username) {
               const timeString = historyEntry.activity.split('In progress for ')[1];
               totalWorkingTime += convertTimeStringToMs(timeString);
             }
@@ -44,7 +49,8 @@ function TeamBoard() {
       return {
         username: user.username,
         email: user.email || `${user.username.toLowerCase()}@gmail.com`,
-        totalWorkingHours: formatTime(totalWorkingTime)
+        totalWorkingHours: formatTime(totalWorkingTime),
+        password: user.password // Include password for admin functions
       };
     });
     
@@ -78,7 +84,8 @@ function TeamBoard() {
       const updatedStaff = [...staff, { 
         username: newStaff.username, 
         email: newStaff.email,
-        totalWorkingHours: '0h 0m 0s'
+        totalWorkingHours: '0h 0m 0s',
+        password: newStaff.password
       }];
       setStaff(updatedStaff);
       
@@ -137,7 +144,6 @@ function TeamBoard() {
     setIsGraphModalOpen(true);
   };
 
-  
   const getStaffWorkingHours = (username, startDate, endDate) => {
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
     const workingHours = {};
@@ -168,11 +174,35 @@ function TeamBoard() {
     return workingHours;
   };
 
+  const handleRowClick = (staffMember) => {
+    if (isAdmin) {
+      setSelectedStaff(staffMember);
+      setIsStaffDetailsOpen(true);
+    }
+  };
+
+  const handleStaffUpdate = (updatedStaff) => {
+    const updatedStaffList = staff.map(member => 
+      member.username === updatedStaff.username ? updatedStaff : member
+    );
+    setStaff(updatedStaffList);
+    
+    const existingUsers = JSON.parse(localStorage.getItem('validUsers') || '[]');
+    const updatedUsers = existingUsers.map(user => 
+      user.username === updatedStaff.username ? updatedStaff : user
+    );
+    localStorage.setItem('validUsers', JSON.stringify(updatedUsers));
+    
+    setIsStaffDetailsOpen(false);
+  };
+
   return (
     <div className="team-board">
       <header className="page-header">
         <h1>Team Board</h1>
-        <button className="add-staff-button" onClick={handleAddStaff}>+ Add Staff</button>
+        {isAdmin && (
+          <button className="add-staff-button" onClick={handleAddStaff}>+ Add Staff</button>
+        )}
       </header>
       <div className="date-filter">
         <DatePicker
@@ -181,7 +211,7 @@ function TeamBoard() {
           selectsStart
           startDate={startDate}
           endDate={endDate}
-          placeholderText="Start Date "
+          placeholderText="Start Date"
         />
         <div className="filter-icon"></div>
         <DatePicker
@@ -191,13 +221,15 @@ function TeamBoard() {
           startDate={startDate}
           endDate={endDate}
           minDate={startDate}
-          placeholderText="End Date "
+          placeholderText="End Date"
         />
       </div>
       <div className="team-table-container">
-        <button className="delete-staff-btn" onClick={toggleDeleteButtons}>
-          {showDeleteButtons}
-        </button>
+        {isAdmin && (
+          <button className="delete-staff-btn" onClick={toggleDeleteButtons}>
+            {showDeleteButtons}
+          </button>
+        )}
         <button className="graph-staff-btn-general" onClick={toggleGraphButtons}>
           {showGraphButtons}
         </button>
@@ -211,16 +243,16 @@ function TeamBoard() {
           </thead>
           <tbody>
             {staff.map((member, index) => (
-              <tr key={index}>
+              <tr key={index} onClick={() => handleRowClick(member)} className={isAdmin ? 'clickable' : ''}>
                 <td>
                   {member.username}
-                  {showDeleteButtons && (
-                    <button className="delete-staff-round-btn" onClick={() => handleDeleteClick(member)}>
+                  {isAdmin && showDeleteButtons && (
+                    <button className="delete-staff-round-btn" onClick={(e) => { e.stopPropagation(); handleDeleteClick(member); }}>
                       -
                     </button>
                   )}
                   {showGraphButtons && (
-                    <button className="graph-staff-btn-small" onClick={() => handleGraphClick(member)}>
+                    <button className="graph-staff-btn-small" onClick={(e) => { e.stopPropagation(); handleGraphClick(member); }}>
                     </button>
                   )}
                 </td>
@@ -275,6 +307,14 @@ function TeamBoard() {
           staff={selectedStaffForGraph}
           onClose={() => setIsGraphModalOpen(false)}
           formatTime={formatTime}
+        />
+      )}
+
+      {isStaffDetailsOpen && (
+        <StaffDetails
+          staff={selectedStaff}
+          onClose={() => setIsStaffDetailsOpen(false)}
+          onUpdate={handleStaffUpdate}
         />
       )}
     </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './NavigationSidebar.css';
 
-function NavigationSidebar({ username, onLogout }) {
+function NavigationSidebar({ username, onLogout, onTeamBoardClick }) {
   return (
     <div className="navigation_sidebar">
       <div className="logo">
@@ -14,7 +14,7 @@ function NavigationSidebar({ username, onLogout }) {
           <li><Link to="/sprint-board" className="nav-link" activeClassName="nav-link--active">Sprint Board</Link></li>
           <li><Link to="/product-backlog" className="nav-link" activeClassName="nav-link--active">Product Backlog</Link></li>
           <li><Link to="/kanban-board" className="nav-link" activeClassName="nav-link--active">Kanban Board</Link></li>
-          <li><Link to="/team-board" className="nav-link" activeClassName="nav-link--active">Team Board</Link></li>
+          <li><Link to="/team-board" className="nav-link" activeClassName="nav-link--active" onClick={onTeamBoardClick}>Team Board</Link></li>
         </ul>
       </nav>
       <div className="user-info">

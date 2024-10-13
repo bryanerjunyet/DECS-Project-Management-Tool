@@ -12,10 +12,13 @@ import KanbanView from './pages/KanbanView';
 import SprintTaskDetails from './components/SprintTaskDetails';
 import LoginPage from './pages/LoginPage';
 import TeamBoard from './pages/TeamBoard';
+import AdminModal from './components/AdminModal';
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -32,6 +35,21 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
+    setIsAdmin(false);
+  };
+
+  const handleTeamBoardClick = () => {
+    setShowAdminModal(true);
+  };
+
+  const handleAdminVerified = () => {
+    setIsAdmin(true);
+    setShowAdminModal(false);
+  };
+
+  const handleStaffSelected = () => {
+    setIsAdmin(false);
+    setShowAdminModal(false);
   };
 
   return (
@@ -40,7 +58,7 @@ function App() {
         <div className="app">
           {user ? (
             <>
-              <NavigationSidebar username={user.username} onLogout={handleLogout} />
+              <NavigationSidebar username={user.username} onLogout={handleLogout} onTeamBoardClick={handleTeamBoardClick} />
               <main className="main-content">
                 <Routes>
                   <Route path="/" element={<Navigate to="/sprint-board" />} />
@@ -52,9 +70,16 @@ function App() {
                   <Route path="/kanban-board" element={<KanbanBoard />} />
                   <Route path="/kanban-view/:sprintId" element={<KanbanView />} />
                   <Route path="/sprint/:sprintId/task/:taskId" element={<SprintTaskDetails currentUser={user} />} />
-                  <Route path="/team-board" element={<TeamBoard />} />
+                  <Route path="/team-board" element={<TeamBoard isAdmin={isAdmin} currentUser={user} />} />
                 </Routes>
               </main>
+              {showAdminModal && (
+                <AdminModal
+                  onClose={() => setShowAdminModal(false)}
+                  onAdminVerified={handleAdminVerified}
+                  onStaffSelected={handleStaffSelected}
+                />
+              )}
             </>
           ) : (
             <Routes>

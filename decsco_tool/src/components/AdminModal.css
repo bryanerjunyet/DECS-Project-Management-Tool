@@ -1,0 +1,72 @@
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.admin-modal {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 350px;
+  max-width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-modal h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+}
+
+.admin-modal input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.admin-modal button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.admin-modal button:hover {
+  background-color: #0056b3;
+}
+
+.admin-modal button + button {
+  margin-top: 10px;
+}
+
+.admin-modal .close-button {
+  background-color: #6c757d;
+  margin-top: 20px;
+}
+
+.admin-modal .close-button:hover {
+  background-color: #545b62;
+}
+
+.admin-modal .error-message {
+  color: #dc3545;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
