@@ -3,6 +3,7 @@ import './TeamBoard.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import DeleteModal from '../components/DeleteModal';
+import GraphModal from '../components/GraphModal';
 
 function TeamBoard() {
   const [staff, setStaff] = useState([]);
@@ -11,8 +12,11 @@ function TeamBoard() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [showDeleteButtons, setShowDeleteButtons] = useState(false);
+  const [showGraphButtons, setShowGraphButtons] = useState(false);
   const [staffToDelete, setStaffToDelete] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isGraphModalOpen, setIsGraphModalOpen] = useState(false);
+  const [selectedStaffForGraph, setSelectedStaffForGraph] = useState(null);
 
   useEffect(() => {
     loadStaffData();
@@ -91,9 +95,14 @@ function TeamBoard() {
     }
   };
 
-
   const toggleDeleteButtons = () => {
     setShowDeleteButtons(!showDeleteButtons);
+    setShowGraphButtons(false);
+  };
+
+  const toggleGraphButtons = () => {
+    setShowGraphButtons(!showGraphButtons);
+    setShowDeleteButtons(false);
   };
 
   const handleDeleteClick = (staffMember) => {
@@ -120,6 +129,44 @@ function TeamBoard() {
     setIsDeleteModalOpen(false);
   };
 
+  const handleGraphClick = (staffMember) => {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const workingHours = getStaffWorkingHours(staffMember.username, oneWeekAgo, new Date());
+    setSelectedStaffForGraph({ ...staffMember, workingHours });
+    setIsGraphModalOpen(true);
+  };
+
+  
+  const getStaffWorkingHours = (username, startDate, endDate) => {
+    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
+    const workingHours = {};
+
+    storedSprints.forEach(sprint => {
+      const sprintTasks = sprint.tasks || [];
+      sprintTasks.forEach(task => {
+        task.history.forEach(historyEntry => {
+          if (
+            historyEntry.staff === username &&
+            historyEntry.activity.startsWith('In progress for') &&
+            isWithinDateRange(historyEntry.date, startDate, endDate)
+          ) {
+            const date = new Date(historyEntry.date).toISOString().split('T')[0];
+            const timeString = historyEntry.activity.split('In progress for ')[1];
+            const timeInMs = convertTimeStringToMs(timeString);
+
+            if (workingHours[date]) {
+              workingHours[date] += timeInMs;
+            } else {
+              workingHours[date] = timeInMs;
+            }
+          }
+        });
+      });
+    });
+
+    return workingHours;
+  };
 
   return (
     <div className="team-board">
@@ -151,6 +198,9 @@ function TeamBoard() {
         <button className="delete-staff-btn" onClick={toggleDeleteButtons}>
           {showDeleteButtons}
         </button>
+        <button className="graph-staff-btn-general" onClick={toggleGraphButtons}>
+          {showGraphButtons}
+        </button>
         <table className="team-table">
           <thead>
             <tr>
@@ -167,6 +217,10 @@ function TeamBoard() {
                   {showDeleteButtons && (
                     <button className="delete-staff-round-btn" onClick={() => handleDeleteClick(member)}>
                       -
+                    </button>
+                  )}
+                  {showGraphButtons && (
+                    <button className="graph-staff-btn-small" onClick={() => handleGraphClick(member)}>
                     </button>
                   )}
                 </td>
@@ -213,6 +267,14 @@ function TeamBoard() {
           staff={staffToDelete}
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
+        />
+      )}
+
+      {isGraphModalOpen && (
+        <GraphModal
+          staff={selectedStaffForGraph}
+          onClose={() => setIsGraphModalOpen(false)}
+          formatTime={formatTime}
         />
       )}
     </div>

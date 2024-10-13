@@ -165,10 +165,11 @@
     border-radius: 3px;
   }
 
-  .delete-staff-btn {
+  .delete-staff-btn,
+  .graph-staff-btn-general {
     position: absolute;
+    top: 115px;
     height: 40px;
-    right: 25px;
     background-color: #ff0000;
     color: white;
     font-size: 16px;
@@ -182,10 +183,23 @@
     background-repeat: no-repeat;
     background-position: 10px center;
     background-size: 20px 25px;
+  }
+  
+  .delete-staff-btn {
+    right: 25px;
     background-image: url('../utils/delete_button.png');
   }
   
-  .delete-staff-btn:hover {
+  .graph-staff-btn-general {
+    right: 80px;
+    background-image: url('../utils/graph_button_white.png');
+    background-size: 25px 25px;
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+  }
+  
+  .delete-staff-btn:hover,
+  .graph-staff-btn-general:hover {
     transform: scale(1.1);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
     border-color: #ffffff;
@@ -218,5 +232,33 @@
   
   .delete-staff-round-btn:hover {
     background-color: #ce0404;
+    transform: scale(1.1) translateY(-50%); /* Maintain vertical centering on hover */
+  }
+
+  .graph-staff-btn-small {
+    position: absolute; /* Position the button absolutely within the cell */
+    right: 10px; /* Adjust the distance from the right edge */
+    top: 50%; /* Center the button vertically */
+    transform: translateY(-50%); /* Adjust for vertical centering */
+    width: 30px; /* Adjust width as needed */
+    height: 30px; /* Adjust height as needed */
+    background-image: url('../utils/graph_button_black.png'); /* Ensure the path is correct */
+    background-size: 20px 20px; /* Ensure the image covers the entire button */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    border: 2px solid #000; /* Add border with desired color */
+    border-radius: 8px; /* Add border radius for rounded corners */
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease; /* Transition for transform */
+    vertical-align: middle;
+  }
+  
+  .graph-staff-btn-small:hover {
+    background-color: rgba(213, 213, 213, 0.5); /* Grey transparent color */
     transform: scale(1.1) translateY(-50%); /* Maintain vertical centering on hover */
   }
