@@ -46,15 +46,29 @@ function TeamBoard({ isAdmin, currentUser }) {
         });
       });
       
+      const averageWorkingHours = calculateAverageWorkingHours(totalWorkingTime);
+      
       return {
         username: user.username,
         email: user.email || `${user.username.toLowerCase()}@gmail.com`,
-        totalWorkingHours: formatTime(totalWorkingTime),
+        averageWorkingHours,
         password: user.password // Include password for admin functions
       };
     });
     
     setStaff(staffWithWorkingHours);
+  };
+
+  const calculateAverageWorkingHours = (totalWorkingTime) => {
+    let numberOfDays = 7; // Default to 7 days if no filter is applied
+    
+    if (startDate && endDate) {
+      const diffTime = Math.abs(endDate - startDate);
+      numberOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Add 1 to include both start and end dates
+    }
+    
+    const averageHoursPerDay = (totalWorkingTime / (1000 * 60 * 60)) / numberOfDays;
+    return averageHoursPerDay.toFixed(2);
   };
 
   const isWithinDateRange = (dateString) => {
@@ -238,7 +252,7 @@ function TeamBoard({ isAdmin, currentUser }) {
             <tr>
               <th>Staff</th>
               <th>Email</th>
-              <th>Working Hours</th>
+              <th>Avg. Working Hours</th>
             </tr>
           </thead>
           <tbody>
@@ -257,7 +271,7 @@ function TeamBoard({ isAdmin, currentUser }) {
                   )}
                 </td>
                 <td>{member.email}</td>
-                <td>{member.totalWorkingHours}</td>
+                <td>{member.averageWorkingHours}</td>
               </tr>
             ))}
           </tbody>

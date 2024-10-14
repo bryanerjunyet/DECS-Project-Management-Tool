@@ -102,7 +102,7 @@
   }
   
   .modal h2 {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
   
   .modal input {
@@ -120,6 +120,7 @@
   }
   
   .modal-buttons button {
+    margin-top: 15px;
     padding: 8px 15px;
     border: none;
     border-radius: 4px;
@@ -127,12 +128,24 @@
   }
   
   .modal-buttons button:first-child {
-    background-color: #ddd;
+      background-color: #ddd;
+      font-weight: bold;
+      font-size: 15px;
   }
-  
+
+  .modal-buttons button:first-child:hover {
+      background-color: #ccc; /* Change to a slightly darker color on hover */
+  }
+
   .modal-buttons button:last-child {
-    background-color: #ff0000;
-    color: white;
+      background-color: #ff0000;
+      font-weight: bold;
+      font-size: 15px;
+      color: white;
+  }
+
+  .modal-buttons button:last-child:hover {
+      background-color: #cc0000; /* Change to a slightly darker red on hover */
   }
 
   .date-filter {

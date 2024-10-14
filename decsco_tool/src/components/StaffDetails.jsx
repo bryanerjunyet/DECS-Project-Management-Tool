@@ -91,7 +91,7 @@ function StaffDetails({ staff, onClose, onUpdate }) {
                 name="newPassword"
                 value={editedStaff.newPassword}
                 onChange={handleInputChange}
-                placeholder="Enter new password to change"
+                placeholder="Change new password"
               />
               <button
                 type="button"
@@ -103,7 +103,7 @@ function StaffDetails({ staff, onClose, onUpdate }) {
             </div>
           </div>
           <div className="form-actions">
-            <button type="submit" className="save-button">Save Changes</button>
+            <button type="submit" className="save-button">Save</button>
             <button type="button" className="cancel-button" onClick={onClose}>Cancel</button>
           </div>
         </form>

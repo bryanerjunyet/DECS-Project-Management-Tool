@@ -8,15 +8,15 @@ function GraphModal({ staff, onClose, formatTime }) {
 
   useEffect(() => {
     if (staff && staff.workingHours) {
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set to end of day
       
       const data = [];
       let total = 0;
       
-      for (let i = 0; i < 7; i++) {
-        const date = new Date(oneWeekAgo);
-        date.setDate(date.getDate() + i);
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
         const dateString = date.toISOString().split('T')[0];
         
         const hoursInMs = staff.workingHours[dateString] || 0;
@@ -25,7 +25,8 @@ function GraphModal({ staff, onClose, formatTime }) {
         
         data.push({
           date: dateString,
-          hours: hours.toFixed(2)
+          hours: parseFloat(hours.toFixed(2)),
+          label: i === 0 ? 'Today' : formatDate(date)
         });
       }
       
@@ -34,6 +35,11 @@ function GraphModal({ staff, onClose, formatTime }) {
     }
   }, [staff, formatTime]);
 
+  const formatDate = (date) => {
+    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
   return (
     <div className="graph-modal-overlay">
       <div className="graph-modal">
@@ -41,7 +47,7 @@ function GraphModal({ staff, onClose, formatTime }) {
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={graphData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
+            <XAxis dataKey="label" />
             <YAxis />
             <Tooltip />
             <Bar dataKey="hours" fill="#8884d8" />
