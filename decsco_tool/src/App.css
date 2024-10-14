@@ -7,7 +7,6 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
     height: 100vh;
     overflow: hidden;
 }
@@ -16,6 +15,9 @@ body {
 .app {
     display: flex;
     height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* Header Styles */
@@ -28,7 +30,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%; /* Full width minus the sidebar width */
+    width: 100%;
     position: relative;
     z-index: 1;
 }
@@ -46,18 +48,23 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 2; /* Ensures it stays below the header */
+    z-index: 2;
 }
 
 /* Main Content */
 .main-content {
-    margin-left: 23vw; /* Aligns the main content next to the sidebar */
-    /* padding: 20px; */
-    width: calc(100vw - 23vw); /* Full width minus sidebar */
-    background-image: url('./utils/client_background.jpg');
-    background-size: cover; /* Ensure the background covers the entire area */
-    background-position: center; /* Center the background image */
-    background-repeat: no-repeat; /* Prevent the background from repeating */
+    margin-left: 23vw;
+    width: calc(100vw - 23vw);
     overflow-y: auto;
     position: relative;
+}
+
+/* Ensure content is readable on any background */
+.main-content > * {
+    background-image: url('./utils/client_background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: 100%;
 }

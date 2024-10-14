@@ -1,0 +1,20 @@
+.size-changer {
+    position: fixed;
+    bottom: 20px;
+    right: 180px;
+    z-index: 1000;
+  }
+  
+  .size-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .size-btn:hover {
+    background-color: #218838;
+  }

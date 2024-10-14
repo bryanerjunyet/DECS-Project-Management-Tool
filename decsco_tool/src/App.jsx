@@ -13,12 +13,16 @@ import SprintTaskDetails from './components/SprintTaskDetails';
 import LoginPage from './pages/LoginPage';
 import TeamBoard from './pages/TeamBoard';
 import AdminModal from './components/AdminModal';
+import BackgroundChanger from './components/BackgroundChanger';
+import SizeChanger from './components/SizeChanger';
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [background, setBackground] = useState('url("./utils/client_background.jpg")');
+  const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -52,10 +56,18 @@ function App() {
     setShowAdminModal(false);
   };
 
+  const handleBackgroundChange = (newBackground) => {
+    setBackground(newBackground);
+  };
+
+  const handleSizeChange = (change) => {
+    setZoom(prevZoom => Math.max(0.5, Math.min(2, prevZoom + change)));
+  };
+
   return (
     <Router>
       <PICProvider>
-        <div className="app">
+        <div className="app" style={{ backgroundImage: background, zoom: zoom }}>
           {user ? (
             <>
               <NavigationSidebar username={user.username} onLogout={handleLogout} onTeamBoardClick={handleTeamBoardClick} />
@@ -80,6 +92,8 @@ function App() {
                   onStaffSelected={handleStaffSelected}
                 />
               )}
+              <BackgroundChanger onBackgroundChange={handleBackgroundChange} />
+              <SizeChanger onSizeChange={handleSizeChange} />
             </>
           ) : (
             <Routes>
