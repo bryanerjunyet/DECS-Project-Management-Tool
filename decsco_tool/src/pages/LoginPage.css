@@ -23,6 +23,7 @@
     display: block;
     width: 100px;
     margin: 0 auto 2rem;
+    margin-bottom: 20px;
   }
 
   .login-title {

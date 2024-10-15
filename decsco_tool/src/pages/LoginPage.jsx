@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import logo from '../utils/decs_logo.png';
+import LoginSecurity from '../components/LoginSecurity'; 
 
 function LoginPage({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showSecurityQuestions, setShowSecurityQuestions] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,7 +18,6 @@ function LoginPage({ onLogin }) {
       navigate('/sprint-board');
     }
 
-    // Initialize empty validUsers in localStorage if it doesn't exist
     if (!localStorage.getItem('validUsers')) {
       localStorage.setItem('validUsers', JSON.stringify([]));
     }
@@ -29,13 +30,23 @@ function LoginPage({ onLogin }) {
       (u) => u.username === username && u.password === password
     );
     if (user) {
-      const userInfo = { username: user.username };
-      localStorage.setItem('user', JSON.stringify(userInfo));
-      onLogin(userInfo);
-      navigate('/sprint-board');
+      loginSuccess(user);
+    } else if (username === 'Admin') {
+      setShowSecurityQuestions(true);
     } else {
       setError('Invalid username or password');
     }
+  };
+
+  const loginSuccess = (user) => {
+    const userInfo = { username: user.username };
+    localStorage.setItem('user', JSON.stringify(userInfo));
+    onLogin(userInfo);
+    navigate('/sprint-board');
+  };
+
+  const handleSecurityQuestionsSuccess = () => {
+    loginSuccess({ username: 'Admin' });
   };
 
   return (
@@ -43,32 +54,36 @@ function LoginPage({ onLogin }) {
       <div className="login-box">
         <img src={logo} alt="DECS Co. Logo" className="login-logo" />
         <p className="login-title">
-            DECS Company<br />Project Tool
+          DECS Company<br />Project Tool
         </p>
-        <form onSubmit={handleLogin}>
-          <div className="input-group">
-            <input
-              className="username-input"
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          <div className="input-group">
-            <input
-              className="password-input"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {error && <p className="error-message">{error}</p>}
-          <button type="submit" className="login-button">Sign In</button>
-        </form>
+        {!showSecurityQuestions ? (
+          <form onSubmit={handleLogin}>
+            <div className="input-group">
+              <input
+                className="username-input"
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <input
+                className="password-input"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            {error && <p className="error-message">{error}</p>}
+            <button type="submit" className="login-button">Sign In</button>
+          </form>
+        ) : (
+          <LoginSecurity onSuccess={handleSecurityQuestionsSuccess} onCancel={() => setShowSecurityQuestions(false)} />
+        )}
       </div>
     </div>
   );
