@@ -6,17 +6,33 @@
   }
   
   .bg-change-btn {
-    background-color: #007bff;
+    background-color: #ff0000;
+    height: 45px;
     color: white;
-    border: none;
-    padding: 10px 15px;
+    font-weight: bold;
+    font-size: 16px;
+    border: 2px solid #000000; /* Add border */
     border-radius: 5px;
     cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow */
+    transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for transform and shadow */
+    padding: 10px 20px 10px 25px; /* Increased left padding for icon */
+    background-repeat: no-repeat;
+    background-position: 10px center; /* Position icon on the left */
+    background-size: 25px 25px; /* Size of the icon */
+    background-image: url('../utils/theme_button.png');
+  }
+
+  .bg-change-btn:hover {
+    transform: scale(1.1); /* Enlarge the button */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+    border-color: #ffffff; /* Change border color on hover */
   }
   
   .background-options {
     position: absolute;
     bottom: 100%;
+    width: 200px;
     right: 0;
     background-color: white;
     border: 1px solid #ddd;
@@ -26,6 +42,8 @@
   
   .bg-option {
     display: block;
+    font-weight: bold;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     width: 100%;
     padding: 5px 10px;
     margin-bottom: 5px;

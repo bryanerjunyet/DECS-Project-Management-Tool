@@ -7,8 +7,8 @@ const SizeChanger = ({ onSizeChange }) => {
 
   return (
     <div className="size-changer">
-      <button className="size-btn" onClick={handleDecrease}>-</button>
-      <button className="size-btn" onClick={handleIncrease}>+</button>
+      <button className="size-minus-btn" onClick={handleDecrease}>-</button>
+      <button className="size-plus-btn" onClick={handleIncrease}>+</button>
     </div>
   );
 };

@@ -17,17 +17,30 @@ import BackgroundChanger from './components/BackgroundChanger';
 import SizeChanger from './components/SizeChanger';
 import './App.css';
 
+// Import background images
+import defaultBg from './utils/client_background.jpg';
+import bg3 from './utils/client_background_3.jpg';
+import bg4 from './utils/client_background_4.jpg';
+import bg5 from './utils/client_background_5.jpg';
+import bg6 from './utils/client_background_6.jpg';
+import bg7 from './utils/client_background_7.jpg';
+
 function App() {
   const [user, setUser] = useState(null);
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [background, setBackground] = useState('url("./utils/client_background.jpg")');
+  const [background, setBackground] = useState(defaultBg);
   const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+    }
+
+    const savedBackground = localStorage.getItem('userBackground');
+    if (savedBackground) {
+      setBackground(savedBackground);
     }
   }, []);
 
@@ -56,8 +69,9 @@ function App() {
     setShowAdminModal(false);
   };
 
-  const handleBackgroundChange = (newBackground) => {
+  const handleChangeBackground = (newBackground) => {
     setBackground(newBackground);
+    localStorage.setItem('userBackground', newBackground);
   };
 
   const handleSizeChange = (change) => {
@@ -67,7 +81,7 @@ function App() {
   return (
     <Router>
       <PICProvider>
-        <div className="app" style={{ backgroundImage: background, zoom: zoom }}>
+        <div className="app" style={{ backgroundImage: `url(${background})`, zoom: zoom }}>
           {user ? (
             <>
               <NavigationSidebar username={user.username} onLogout={handleLogout} onTeamBoardClick={handleTeamBoardClick} />
@@ -92,7 +106,7 @@ function App() {
                   onStaffSelected={handleStaffSelected}
                 />
               )}
-              <BackgroundChanger onBackgroundChange={handleBackgroundChange} />
+              <BackgroundChanger onBackgroundChange={handleChangeBackground} />
               <SizeChanger onSizeChange={handleSizeChange} />
             </>
           ) : (

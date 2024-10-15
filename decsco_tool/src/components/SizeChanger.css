@@ -1,13 +1,31 @@
 .size-changer {
     position: fixed;
     bottom: 20px;
-    right: 180px;
+    right: 90px;
     z-index: 1000;
   }
   
-  .size-btn {
-    background-color: #28a745;
-    color: white;
+  .size-minus-btn {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    font-size: 18px;
+    border: none;
+    padding: 10px 17px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .size-minus-btn:hover {
+    background-color: #d0d0d0;
+  }
+
+  .size-plus-btn {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    font-size: 18px;
     border: none;
     padding: 10px 15px;
     margin: 0 5px;
@@ -15,6 +33,6 @@
     cursor: pointer;
   }
   
-  .size-btn:hover {
-    background-color: #218838;
+  .size-plus-btn:hover {
+    background-color: #d0d0d0;
   }
