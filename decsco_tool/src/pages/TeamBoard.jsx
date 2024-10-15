@@ -26,7 +26,17 @@ function TeamBoard({ isAdmin, currentUser }) {
   }, [startDate, endDate, isAdmin, currentUser]);
 
   const loadStaffData = () => {
+    // Add Admin account if it doesn't exist
     const validUsers = JSON.parse(localStorage.getItem('validUsers') || '[]');
+    if (!validUsers.some(user => user.username === 'Admin')) {
+      validUsers.push({
+        username: 'Admin',
+        password: 'Admin12345',
+        email: 'admin@gmail.com'
+      });
+      localStorage.setItem('validUsers', JSON.stringify(validUsers));
+    }
+    console.log(validUsers);
     const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
     
     let staffToDisplay = isAdmin ? validUsers : validUsers.filter(user => user.username === currentUser.username);

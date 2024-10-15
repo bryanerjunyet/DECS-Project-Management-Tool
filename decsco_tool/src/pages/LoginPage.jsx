@@ -18,9 +18,22 @@ function LoginPage({ onLogin }) {
       navigate('/sprint-board');
     }
 
+    // Initialize validUsers if it doesn't exist
     if (!localStorage.getItem('validUsers')) {
       localStorage.setItem('validUsers', JSON.stringify([]));
     }
+
+    // Add Admin account if it doesn't exist
+    const validUsers = JSON.parse(localStorage.getItem('validUsers'));
+    if (!validUsers.some(user => user.username === 'Admin')) {
+      validUsers.push({
+        username: 'Admin',
+        password: 'Admin12345',
+        email: 'admin@gmail.com'
+      });
+      localStorage.setItem('validUsers', JSON.stringify(validUsers));
+    }
+    console.log(validUsers);
   }, [navigate, onLogin]);
 
   const handleLogin = (e) => {
