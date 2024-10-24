@@ -1,0 +1,66 @@
+.change-bg {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.background-dropdown {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background-color: rgb(240, 65, 65);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    width: 220px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.background-options {
+    display: flex;
+    flex-direction: column;
+}
+
+.background-option {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.background-option:hover {
+    background-color: #f0f0f0;
+}
+
+.background-option img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.background-option p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Scrollbar styles */
+.background-dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.background-dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.background-dropdown::-webkit-scrollbar-thumb {
+    background: #5c5757;
+    border-radius: 4px;
+}
+
+.background-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

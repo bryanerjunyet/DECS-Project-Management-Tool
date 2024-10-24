@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './SprintModal.css';
 
 const SprintModal = ({ sprint, onSave, onClose, isEditing = false }) => {
+  const [sprintID, setSprintID] = useState('');
   const [sprintName, setSprintName] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -12,29 +13,28 @@ const SprintModal = ({ sprint, onSave, onClose, isEditing = false }) => {
 
   useEffect(() => {
     if (isEditing && sprint) {
-      setSprintName(sprint.name);
-      setStartDate(new Date(sprint.startDate));
-      setEndDate(new Date(sprint.endDate));
+      setSprintID(sprint.sprint_id)
+      setSprintName(sprint.sprint_name);
+      setStartDate(new Date(sprint.start_date));
+      setEndDate(new Date(sprint.end_date));
     }
   }, [isEditing, sprint]);
 
+
   const handleSave = () => {
     const updatedSprint = {
-      ...(isEditing ? sprint : { id: Date.now().toString() }),
-      name: sprintName,
-      startDate: startDate.toISOString().split('T')[0],
-      endDate: endDate.toISOString().split('T')[0],
-      status: isEditing ? sprint.status : 'Not started',
-      tasks: isEditing ? sprint.tasks : []
-    };
+      sprint_id: sprintID,
+      sprint_name: sprintName,
+      start_date: startDate,
+      end_date: endDate,
+      sprintstatus_id: isEditing ? sprint.sprintstatus_id : 1,
+      isEditing: isEditing
+        }
 
-    onSave(updatedSprint);
-    onClose();
+        onSave(updatedSprint);
+        onClose();
+  }
 
-    if (!isEditing) {
-      navigate(`/sprint/${updatedSprint.id}/backlog`);
-    }
-  };
 
   return (
     <div className="modal-overlay">

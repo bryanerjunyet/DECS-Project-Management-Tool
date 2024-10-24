@@ -98,7 +98,7 @@
 /* Priority styles */
 .priority-low { background-color: lightgreen; color: darkgreen; }
 .priority-medium { background-color: lightblue; color: darkblue; }
-.priority-high { background-color: rgb(255, 219, 152); color: rgb(119, 66, 0); }
+.priority-high { background-color: #e9b759; color: rgb(119, 66, 0); }
 .priority-urgent { background-color: lightcoral; color: darkred; }
 
 /* Stage styles */
@@ -116,7 +116,10 @@
 .status-completed { background-color: rgb(0, 151, 60); color: white; }
 
 /* Person styles */
-.person {
+.person-alvin,
+.person-bryan,
+.person-joey,
+.person-shelly {
   background-color: #fff986;
   color: rgb(145, 80, 0);
 }

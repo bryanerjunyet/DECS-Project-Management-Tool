@@ -10,7 +10,9 @@
 }
 
 .product-backlog h1 {
-  font-size: 35px;
+  font-size: 35px; /* Matching size */
+  font-family: Verdana, Geneva, Tahoma, sans-serif; /* Same font */
+  font-weight: bold; /* Ensure same weight if applicable */
 }
 
 .new-task {

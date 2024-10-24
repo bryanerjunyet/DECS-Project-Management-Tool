@@ -1,209 +1,225 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import TaskCardView from '../components/TaskCardView';
-import SprintTaskDetails from '../components/SprintTaskDetails';
+import TaskCardDetails from '../components/TaskCardDetails';
 import './KanbanView.css';
 
 const KanbanView = () => {
   const { sprintId } = useParams();
   const [sprint, setSprint] = useState(null);
-  const [tasks, setTasks] = useState({
-    todo: [],
-    inProgress: [],
-    done: []
-  });
-  const [sprintStatus, setSprintStatus] = useState('Not Started');
   const [selectedTask, setSelectedTask] = useState(null);
   const [showTaskDetails, setShowTaskDetails] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [error, setError] = useState(null);
+  const [todoTasks, setTodoTasks] = useState([]);
+  const [progressTasks, setProgressTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
 
   useEffect(() => {
+    fetchAll();
     fetchSprint();
-    fetchCurrentUser();
   }, [sprintId]);
+  
+  const fetchAll = async () => {
+    fetchTodoTasks();
+    fetchProgressTasks();
+    fetchCompletedTasks();
+  }
 
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => {
-        setError(null);
-      }, 2000); // 2 seconds
+  const fetchSprint = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/sprints?sprint_id=${sprintId}`, {
+        method: 'GET'
+      });
 
-      return () => clearTimeout(timer); // Cleanup the timer on component unmount
+      if (!response.ok) {
+        throw new Error(response.message);
+      }
+      const jsonData = await response.json();
+      setSprint(jsonData.rows[0]);
+    } catch (err) {
+      console.error('Error fetching sprint:', err);
     }
-  }, [error]);
+  }
 
-  const fetchCurrentUser = () => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser) {
-      setCurrentUser(storedUser);
+  const fetchTodoTasks = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/sprints/tasks?sprint_id=${sprintId}&taskstatus_id=1`, {
+        method: 'GET'
+      });
+
+      if (response.status === 204) {
+        setTodoTasks([]);
+      } else if (!response.ok) {
+        throw new Error(response.message);
+      } else {
+        const jsonData = await response.json();
+        setTodoTasks(jsonData.rows);
+      }
+    } catch (err) {
+      console.error('Error fetching todo tasks:', err);
     }
-  };
+  }
 
-  const fetchSprint = () => {
-    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const foundSprint = storedSprints.find(s => s.id === sprintId);
-    if (foundSprint) {
-      setSprint(foundSprint);
-      setSprintStatus(foundSprint.status || 'Not Started');
-      initializeTasks(foundSprint.tasks);
+  const fetchProgressTasks = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/sprints/tasks?sprint_id=${sprintId}&taskstatus_id=2`, {
+        method: 'GET'
+      });
+
+      if (response.status === 204) {
+        setProgressTasks([]);
+      } else if (!response.ok) {
+        throw new Error(response.message);
+      } else {
+        const jsonData = await response.json();
+        setProgressTasks(jsonData.rows);
+      }
+    } catch (err) {
+      console.error('Error fetching in-progress tasks:', err);
     }
-  };
+  }
 
-  const initializeTasks = (sprintTasks) => {
-    const initialTasks = {
-      todo: sprintTasks.filter(task => task.taskStatus === 'TO DO'),
-      inProgress: sprintTasks.filter(task => task.taskStatus === 'IN PROGRESS'),
-      done: sprintTasks.filter(task => task.taskStatus === 'COMPLETED')
-    };
-    setTasks(initialTasks);
-  };
+  const fetchCompletedTasks = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/sprints/tasks?sprint_id=${sprintId}&taskstatus_id=3`, {
+        method: 'GET'
+      });
+
+      if (response.status === 204) {
+        setCompletedTasks([]);
+      } else if (!response.ok) {
+        throw new Error(response.message);
+      } else {
+        const jsonData = await response.json();
+        setCompletedTasks(jsonData.rows);
+      }
+    } catch (err) {
+      console.error('Error fetching completed tasks:', err);
+    }
+  }
 
   const handleDragStart = (e, task) => {
+    if (sprint.sprintstatus_id === 3) {
+      e.preventDefault();
+      return;
+    }
     e.dataTransfer.setData('application/json', JSON.stringify(task));
     e.dataTransfer.effectAllowed = 'move';
   };
 
   const handleDragOver = (e) => {
+    if (sprint.sprintstatus_id === 3) {
+      return;
+    }
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     e.currentTarget.classList.add('dragged-over');
   };
 
   const handleDragLeave = (e) => {
-    e.currentTarget.classList.remove('dragged-over');
-  };
-
-  const handleDrop = (e, targetColumn) => {
-    e.preventDefault();
-    e.currentTarget.classList.remove('dragged-over');
-    const taskData = e.dataTransfer.getData('application/json');
-    const task = JSON.parse(taskData);
-    const sourceColumn = findTaskColumn(task.id);
-
-    if (sourceColumn !== targetColumn) {
-      const sourceTasks = tasks[sourceColumn].filter(t => t.id !== task.id);
-      const targetTasks = [...tasks[targetColumn], { ...task, taskStatus: getStatusFromColumn(targetColumn) }];
-
-      const updatedTasks = {
-        ...tasks,
-        [sourceColumn]: sourceTasks,
-        [targetColumn]: targetTasks
-      };
-
-      setTasks(updatedTasks);
-      updateTaskStatus(task.id, getStatusFromColumn(targetColumn), updatedTasks);
-    }
-  };
-
-  const findTaskColumn = (taskId) => {
-    for (const column in tasks) {
-      if (tasks[column].some(task => task.id === taskId)) {
-        return column;
-      }
-    }
-    return null;
-  };
-
-  const getStatusFromColumn = (column) => {
-    switch (column) {
-      case 'todo': return 'TO DO';
-      case 'inProgress': return 'IN PROGRESS';
-      case 'done': return 'COMPLETED';
-      default: return 'TO DO';
-    }
-  };
-
-  const updateTaskStatus = (taskId, newStatus, updatedTasks) => {
-    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const updatedSprints = storedSprints.map(s => {
-      if (s.id === sprintId) {
-        return {
-          ...s,
-          tasks: Object.values(updatedTasks).flat()
-        };
-      }
-      return s;
-    });
-    localStorage.setItem('sprints', JSON.stringify(updatedSprints));
-  };
-
-  
-  const handleStartSprint = () => {
-    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const activeSprint = storedSprints.find(s => s.status === 'Active');
-
-    if (activeSprint && activeSprint.id !== sprintId) {
-      setError(`Cannot start this sprint. Sprint "${activeSprint.name}" is currently active.`);
+    if (sprint.sprintstatus_id === 3) {
       return;
     }
-
-    const updatedSprints = storedSprints.map(s => {
-      if (s.id === sprintId) {
-        return { ...s, status: 'Active' };
-      }
-      if (s.status === 'Active') {
-        return { ...s, status: 'Not started' };
-      }
-      return s;
-    });
-
-    localStorage.setItem('sprints', JSON.stringify(updatedSprints));
-    setSprintStatus('Active');
-    setSprint({ ...sprint, status: 'Active' });
-    setError(null);
+    e.currentTarget.classList.remove('dragged-over');
   };
 
-  const handleEndSprint = () => {
-    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const updatedSprints = storedSprints.map(s =>
-      s.id === sprintId ? { ...s, status: 'Completed' } : s
-    );
-    localStorage.setItem('sprints', JSON.stringify(updatedSprints));
-    setSprintStatus('Completed');
-    setSprint({ ...sprint, status: 'Completed' });
+  const handleDrop = async (e, newStatus) => {
+    if (sprint.sprintstatus_id === 3) {
+      return;
+    }
+    e.preventDefault();
+    const droppedTask = JSON.parse(e.dataTransfer.getData('application/json'));
+    
+    if (droppedTask.taskstatus_id !== newStatus) {
+      try {
+        const response = await fetch(`http://localhost:3001/tasks`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          }, 
+          body: JSON.stringify({
+            task_id: droppedTask.task_id,
+            taskstatus_id: newStatus
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(response.message);
+        }
+        fetchAll();
+      } catch (err) {
+        console.error('Failed to update task status:', err);
+      }
+    }
   };
 
-  const updateSprintStatus = (status) => {
-    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const updatedSprints = storedSprints.map(s =>
-      s.id === sprintId ? { ...s, status: status } : s
-    );
-    localStorage.setItem('sprints', JSON.stringify(updatedSprints));
-    setSprint({ ...sprint, status: status });
+  const handleStartSprint = async () => {
+    if (sprint.sprintstatus_id !== 1) return;
+    try {
+      const response = await fetch(`http://localhost:3001/sprints`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        }, 
+        body: JSON.stringify({
+          sprint_id: sprint.sprint_id,
+          sprintstatus_id: 2
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(response.message);
+      }
+      fetchSprint();
+    } catch (err) {
+      console.error('Failed to activate sprint:', err);
+    }
+  };
+
+  const handleEndSprint = async () => {
+    if (sprint.sprintstatus_id !== 2) return;
+    try {
+      const response = await fetch(`http://localhost:3001/sprints`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        }, 
+        body: JSON.stringify({
+          sprint_id: sprint.sprint_id,
+          sprintstatus_id: 3
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(response.message);
+      }
+      fetchSprint();
+    } catch (err) {
+      console.error('Failed to end sprint:', err);
+    }
   };
 
   const handleTaskClick = (task) => {
+    if (sprint.sprintstatus_id === 3) return;
     setSelectedTask(task);
     setShowTaskDetails(true);
   };
 
-  const handleSaveTask = (editedTask) => {
-    const updatedTasks = Object.keys(tasks).reduce((acc, column) => {
-      acc[column] = tasks[column].map(task =>
-        task.id === editedTask.id ? editedTask : task
-      );
-      return acc;
-    }, {});
-
-    setTasks(updatedTasks);
-    updateTaskInStorage(editedTask);
-    setShowTaskDetails(false);
-    setSelectedTask(null);
-  };
-
-  const updateTaskInStorage = (updatedTask) => {
-    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const updatedSprints = storedSprints.map(s => {
-      if (s.id === sprintId) {
-        return {
-          ...s,
-          tasks: s.tasks.map(t => t.id === updatedTask.id ? updatedTask : t)
-        };
+  const handleSaveTask = async (editedTask) => {
+    if (sprint.sprintstatus_id === 3) return;
+    try {
+      const response = await fetch(`http://localhost:3001/tasks`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editedTask),
+      });
+      if (!response.ok) {
+        throw new Error(response.message);
       }
-      return s;
-    });
-    localStorage.setItem('sprints', JSON.stringify(updatedSprints));
+      fetchAll();
+      setShowTaskDetails(false);
+      setSelectedTask(null);
+    } catch (err) {
+      console.error('Failed to update task:', err);
+    }
   };
 
   const handleCloseTaskDetails = () => {
@@ -215,61 +231,81 @@ const KanbanView = () => {
     return <div>Loading...</div>;
   }
 
-  const isCompleted = sprintStatus === 'Completed';
   return (
-    <div className={`kanban-view ${isCompleted ? 'completed-sprint' : ''}`}>
+    <div className={`kanban-view ${sprint.sprintstatus_id === 3 ? 'completed-sprint' : ''}`}>
       <header className="page-header">
-        <h1>Kanban View: {sprint.name}</h1>
+        <h1>Kanban View: {sprint.sprint_name}</h1>
         <div className="sprint-controls">
-          {sprintStatus === 'Not started' && (
+          {sprint.sprintstatus_id === 1 && (
             <button onClick={handleStartSprint} className="start-sprint">Start Sprint</button>
           )}
-          {sprintStatus === 'Active' && (
+          {sprint.sprintstatus_id === 2 && (
             <button onClick={handleEndSprint} className="end-sprint">End Sprint</button>
           )}
         </div>
       </header>
-      {error && <div className={`error-sprint ${error ? 'show' : ''}`}>{error}</div>}
       <div className="sprint-info">
-        <div className="date-info">Start Date: {sprint.startDate}</div>
-        <div className="date-info">End Date: {sprint.endDate}</div>
-        <div className={`sprint-status status-${sprintStatus.toLowerCase().replace(' ', '-')}`}>
-          Status: {sprintStatus}
+        <div>Start Date: {sprint.display_start_date}</div>
+        <div>End Date: {sprint.display_end_date}</div>
+        <div className={`sprint-status status-${sprint.status_name.toLowerCase().replace(' ', '-')}`}>
+          Status: {sprint.status_name}
         </div>
       </div>
-      <div className="kanban-columns">
-        {['todo', 'inProgress', 'done'].map((columnId) => (
-          <div
-            key={columnId}
-            className={`kanban-column ${isCompleted ? 'completed' : ''}`}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={(e) => handleDrop(e, columnId)}
-          >
-            <h3 className={`kanban-column-title ${columnId}`}>
-              {columnId === 'todo' ? 'To-Do' : columnId === 'inProgress' ? 'In-Progress' : 'Done'}
-            </h3>
-            <div className="task-list">
-              {tasks[columnId].map((task) => (
-                <div
-                  key={task.id}
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, task)}
-                  onClick={() => handleTaskClick(task)}
-                >
-                  <TaskCardView task={task} />
-                </div>
-              ))}
-            </div>
+      <div className="kanban-container">
+        <div className="kanban-column" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={(e) => handleDrop(e, 1)}>
+          <h3 className="kanban-column-title todo">To-Do</h3>
+          <div className="task-list">
+            {todoTasks.map((task) => (
+              <div
+                key={task.task_id}
+                draggable={sprint.sprintstatus_id !== 3}
+                onDragStart={(e) => handleDragStart(e, task)}
+                onClick={() => handleTaskClick(task)}
+              >
+                <TaskCardView task={task} />
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+
+        <div className="kanban-column" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={(e) => handleDrop(e, 2)}>
+          <h3 className="kanban-column-title inProgress">In-Progress</h3>
+          <div className="task-list">
+            {progressTasks.map((task) => (
+              <div
+                key={task.task_id}
+                draggable={sprint.sprintstatus_id !== 3}
+                onDragStart={(e) => handleDragStart(e, task)}
+                onClick={() => handleTaskClick(task)}
+              >
+                <TaskCardView task={task} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="kanban-column" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={(e) => handleDrop(e, 3)}>
+          <h3 className="kanban-column-title done">Done</h3>
+          <div className="task-list">
+            {completedTasks.map((task) => (
+              <div
+                key={task.task_id}
+                draggable={sprint.sprintstatus_id !== 3}
+                onDragStart={(e) => handleDragStart(e, task)}
+                onClick={() => handleTaskClick(task)}
+              >
+                <TaskCardView task={task} />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      {showTaskDetails && selectedTask && currentUser && (
-        <SprintTaskDetails
+      {showTaskDetails && selectedTask && (
+        <TaskCardDetails
           task={selectedTask}
           onSave={handleSaveTask}
           onClose={handleCloseTaskDetails}
-          currentUser={currentUser}
+          readOnly={sprint.sprintstatus_id === 3}
         />
       )}
     </div>

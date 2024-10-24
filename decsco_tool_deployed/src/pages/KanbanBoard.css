@@ -1,0 +1,16 @@
+/* KanbanBoard.css */
+.kanban-board {
+    padding: 0px;
+  }
+
+  .kanban-board h1 {
+    margin-bottom: 3px;
+  }
+  
+  .no-active-sprints {
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin-top: 50px;
+  }

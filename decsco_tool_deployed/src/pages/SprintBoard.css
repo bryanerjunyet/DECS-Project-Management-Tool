@@ -1,0 +1,174 @@
+.sprint-board {
+  padding: 0px;
+  border-radius: 10px;
+}
+
+.page-header {
+  background-color: #000000;
+  color: #fff;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 17px;
+  padding: 15px;
+  margin-bottom: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: calc(100% + 10px);
+}
+
+.page-header h1 {
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.create-sprint-btn {
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  background-color: #ff0000;
+}
+
+.create-sprint-btn:hover {
+  background-color: #b60000;
+}
+
+.sprint-table-container {
+  position: relative;
+  margin-top: 20px;
+  margin-left: 30px;
+}
+
+.delete-sprint-btn {
+  position: absolute;
+  height: 40px;
+  right: 25px;
+  background-color: #ff0000;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: 2px solid #000000; /* Add border */
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow */
+  transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for transform and shadow */
+  padding: 10px 20px 10px 22px; /* Increased left padding for icon */
+  background-repeat: no-repeat;
+  background-position: 10px center; /* Position icon on the left */
+  background-size: 20px 25px; /* Size of the icon */
+  background-image: url('../utils/delete_button.png');
+}
+
+.delete-sprint-btn:hover {
+  transform: scale(1.1); /* Enlarge the button */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+  border-color: #ffffff; /* Change border color on hover */
+}
+
+.sprint-table {
+  width: 100%;
+  max-width: 850px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: rgb(255, 255, 255);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.sprint-table th,
+.sprint-table td {
+  padding: 15px;
+  text-align: left;
+  font-size: 20px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.sprint-table th {
+  background: rgb(22, 45, 105);
+  border: 1px solid rgb(204, 204, 204);
+  color: rgb(255, 255, 255);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sprint-table td {
+  border: 1px solid rgb(204, 204, 204);
+}
+
+.sprint-table tbody tr {
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.sprint-table tbody tr:hover {
+  background: rgb(220, 241, 253);
+  color: black;
+}
+
+.ready-sprint-btn,
+.view-sprint-btn {
+  color: white;
+  padding: 10px 20px 10px 40px;
+  width: 170px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  background-size: 20px 20px;
+  margin-right: 10px;
+}
+
+.ready-sprint-btn {
+  background-color: #ff0000;
+  background-image: url('../utils/confirm_button.png');
+}
+
+.view-sprint-btn {
+  background-color: #ff7518;
+  background-image: url('../utils/view_button.png');
+}
+
+.ready-sprint-btn:hover,
+.view-sprint-btn:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.ready-sprint-btn:hover {
+  background-color: #b60000;
+}
+
+.view-sprint-btn:hover {
+  background-color: rgb(191, 101, 16);
+}
+
+.delete-sprint-round-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  vertical-align: middle;
+}
+
+.delete-sprint-round-btn:hover {
+  background-color: #ce0404;
+  transform: scale(1.1); /* Enlarge the button */
+}

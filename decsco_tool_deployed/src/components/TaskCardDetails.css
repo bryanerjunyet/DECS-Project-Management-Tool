@@ -1,0 +1,152 @@
+.task-card-details-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .task-card-details {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .task-card-details h1 {
+    text-align: center;
+    color: white;
+    background-color: #333;
+    padding: 15px;
+    margin: -20px -20px 20px -20px;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .form-field {
+    margin-bottom: 15px;
+  }
+  
+  .form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-field input[type="text"],
+  .form-field textarea,
+  .form-field select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .form-field select[multiple] {
+    height: 100px;
+  }
+  
+  /* Person styles */
+  .person {
+    background-color: #fff986;
+    color: rgb(145, 80, 0);
+  }
+
+  .type-of-task {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .slider {
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .save-task, .delete-task, .cancel {
+    padding: 10px 15px;
+    font-size: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .save-task {
+    background-color: #ff0000;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+    background-repeat: no-repeat;
+    background-position: 10px center; /* Position icon on the left */
+    background-size: 20px 20px; /* Size of the icon */
+    background-image: url('../utils/confirm_button.png');
+  }
+
+  .save-task:hover {
+    background-color: #cc0000; /* Darker red on hover */
+  }
+  
+  .delete-task {
+    background-color: #ff0000;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px 10px 40px; /* Increased left padding for icon */
+    background-repeat: no-repeat;
+    background-position: 10px center; /* Position icon on the left */
+    background-size: 20px 20px; /* Size of the icon */
+    background-image: url('../utils/delete_button.png');
+  }
+
+  .delete-task:hover {
+    background-color: #cc0000; /* Darker red on hover */
+  }
+  
+  .cancel {
+    background-color: #ccc;
+    color: black;
+    font-weight: bold;
+  }
+
+  .cancel:hover {
+    background-color: #999; /* Darker grey on hover */
+  }
+  
+  /* Priority styles */
+  .priority-low { background-color: lightgreen; color: darkgreen; }
+  .priority-medium { background-color: lightblue; color: darkblue; }
+  .priority-high { background-color: rgb(255, 219, 152); color: rgb(119, 66, 0); }
+  .priority-urgent { background-color: lightcoral; color: darkred; }
+  
+  /* Stage styles */
+  .stage-planning,
+  .stage-development,
+  .stage-testing,
+  .stage-integration {
+    background-color: rgb(75, 75, 118);
+    color: white;
+  }
+  
+  /* Status styles */
+  .status-todo { background-color: rgb(0, 140, 168); color: white; }
+  .status-inprogress { background-color: rgb(255, 157, 0); }
+  .status-completed { background-color: rgb(0, 151, 60); color: white; }
+  

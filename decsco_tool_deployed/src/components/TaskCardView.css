@@ -1,0 +1,87 @@
+.task-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 50px;
+  padding: 70px;
+}
+
+.task-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  min-height: 250px;
+  overflow: hidden;
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+}
+
+.priority-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.priority-tag .tag {
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.task-card h3 {
+  font-size: 20px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.story-points {
+  margin-bottom: 15px;
+}
+
+.story-points span {
+  background-color: #ffff3d;
+  border: 2px solid #ccc;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.tags {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.tags .tag {
+  background-color: #333;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.low .priority-tag .tag { background-color: green; }
+.medium .priority-tag .tag { background-color: blue; }
+.high .priority-tag .tag { background-color: orange; }
+.urgent .priority-tag .tag { background-color: red; }
+
+/* ProductBacklog.css additions */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}

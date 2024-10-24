@@ -1,281 +1,316 @@
+/* General styling for the team board */
 .team-board {
-    padding: 0px;
-  }
-  
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+/* Header styling */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.page-header h1 {
+  font-size: 35px;
+  font-weight: bold;
+}
+
+/* Date inputs styling */
+.date-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.date-inputs label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.date-inputs input {
+  padding: 5px 10px;
+  border: 1px solid #444;
+  background-color: #898686;
+  color: white;
+  border-radius: 4px;
+}
+
+/* Button styling */
+.change-admin-password-button {
+  background-color: #ef2a1f;
+  font-weight: bold;
+  border: 2px solid black;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin-left: 30px;
+}
+
+.change-admin-password-button:hover {
+  background-color: #cc0000;
+}
+
+.change-staff-password-button {
+  background-color: #ef2a1f;
+  font-weight: bold;
+  border: 2px solid black;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.change-staff-password-button:hover {
+  background-color: #cc0000;
+}
+
+/* Table styling */
+.team-table-container {
+  overflow-x: auto;
+}
+
+.team-table {
+  width: 100%;
+  max-width: 850px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-left: 30px;
+}
+
+.team-table th {
+  background-color: #ffffff;
+  color: black;
+  border: #1e3a8a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 15px;
+  text-align: left;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.team-table td {
+  background: rgb(211, 211, 211);
+  border: 1px solid #e5e7eb;
+  color: black;
+  padding: 15px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+/* New Row Hover Effect */
+.team-table tbody tr {
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.team-table tbody tr:hover {
+  background-color: #c5f2f8; /* Light blue background */
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds depth */
+  cursor: pointer;
+}
+
+/* Optional: Hover effect for individual cells */
+.team-table tbody tr:hover {
+  background-color: #8c8888;
+}
+
+/* Staff cell and working hours cell styling */
+.staff-cell,
+.working-hours-cell {
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Action button styling */
+.action-button {
+  padding: 5px 10px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: background-color 0.3s;
+}
+
+.graph-button {
+  margin-left: 10px;
+  font-weight: bold;
+  background-color: #ef2a1f;
+}
+
+.graph-button:hover {
+  background-color: #bc1e15;
+}
+
+.delete-button {
+  font-weight: bold;
+  margin-right:10px;
+  background-color: #ff4136;
+}
+
+.delete-button:hover {
+  background-color: #dc352b;
+}
+
+/* Modal styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #faf8f8;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  max-width: 90%;
+  color: rgb(12, 12, 12);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+/* Graph placeholder styling */
+.graph-placeholder {
+  height: 200px;
+  background-color: #3c3c3c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  border: 2px dashed #555;
+}
+
+/* Close button styling */
+.close-button {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.close-button:hover {
+  background-color: #cc0000;
+}
+
+/* Reassign modal specific styling */
+.reassign-modal {
+  max-width: 400px;
+}
+
+.reassign-modal select {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  background-color: #9a9898;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 4px;
+}
+
+/* Password change modal specific styling */
+.password-change-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.password-change-modal input,
+.password-change-modal select {
+  width: 100%;
+  padding: 8px;
+  background-color: #c5c1c1;
+  color: black;
+  border: 1px solid #a7a3a3;
+  border-radius: 4px;
+}
+
+.password-change-modal button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.password-change-modal button:first-of-type {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+
+}
+
+.password-change-modal button:last-of-type {
+  background-color: #f44336;
+  color: white;
+  font-weight: bold;
+
+}
+
+.password-change-modal button:hover {
+  opacity: 0.8;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
   .page-header {
-    background-color: #000000;
-    color: #fff;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 17px;
-    padding: 15px;
-    margin-bottom: 0px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: calc(100% + 10px);
-  }
-  
-  .page-header h1 {
-    font-size: 35px;
-    font-weight: bold;
+      flex-direction: column;
+      align-items: flex-start;
   }
 
-  .team-board h1 {
-    margin-bottom: 2px;
-    color: #ffffff;
-  }
-  
-  .team-table-container {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 30px;
-    margin-right: 30px;
-  }
-  
-  .team-table {
-    width: 100%;
-    max-width: 850px;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: rgb(255, 255, 255);
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  }
-  
-  .team-table th,
-  .team-table td {
-    border: 1px solid rgb(204, 204, 204);
-    padding: 10px;
-    text-align: left;
-    font-size: 18px;
-  }
-  
-  .team-table th {
-    background: rgb(46, 46, 46);
-    height: 50px;
-    text-transform: uppercase;
-    border: 1px solid rgb(204, 204, 204);
-    color: rgb(255, 255, 255);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  .date-inputs {
+      flex-direction: column;
+      width: 100%;
   }
 
-  .team-table tr:hover {
-    background-color: #f5f5f5;
-  }
-  
-  .add-staff-button {
-    font-weight: bold;
-    padding: 12px;
-    background-color: #ff0000;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 18px;
-    text-align: center;
-    margin-left: 20px;
-
-  }
-  
-  .add-staff-button:hover {
-    background-color: #cc0000;
-  }
-  
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal {
-    background-color: white;
-    padding: 20px;
-    border-radius: 4px;
-    width: 400px;
-  }
-  
-  .modal h2 {
-    margin-bottom: 20px;
-  }
-  
-  .modal input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-  
-  .modal-buttons button {
-    margin-top: 15px;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .modal-buttons button:first-child {
-      background-color: #ddd;
-      font-weight: bold;
-      font-size: 15px;
+  .staff-cell,
+  .working-hours-cell {
+      flex-direction: column;
+      align-items: flex-start;
   }
 
-  .modal-buttons button:first-child:hover {
-      background-color: #ccc; /* Change to a slightly darker color on hover */
+  .action-button {
+      width: 100%;
   }
-
-  .modal-buttons button:last-child {
-      background-color: #ff0000;
-      font-weight: bold;
-      font-size: 15px;
-      color: white;
-  }
-
-  .modal-buttons button:last-child:hover {
-      background-color: #cc0000; /* Change to a slightly darker red on hover */
-  }
-
-  .date-filter {
-    display: flex;
-    align-items: center;
-    margin-left: 190px;
-    margin-right: 180px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .date-filter .react-datepicker-wrapper {
-    margin: 0 10px;
-  }
-  
-  .date-filter input {
-    padding: 8px;
-    border: 2px solid #969595;
-    border-radius: 15px;
-    text-align: center;
-    font-size: 15px;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
-  }
-  
-  .filter-icon {
-    width: 30px; /* Set the desired width */
-    height: 30px; /* Set the desired height */
-    background-image: url('../utils/filter_button.png');
-    background-size: cover; /* Ensure the image covers the entire div */
-    background-position: center; /* Center the image */
-    background-repeat: no-repeat; /* Prevent the image from repeating */
-    border: 1.5px solid rgb(255, 255, 255);
-    border-radius: 3px;
-  }
-
-  .delete-staff-btn,
-  .graph-staff-btn-general {
-    position: absolute;
-    top: 115px;
-    height: 40px;
-    background-color: #ff0000;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    border: 2px solid #000000;
-    border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-    padding: 10px 20px 10px 22px;
-    background-repeat: no-repeat;
-    background-position: 10px center;
-    background-size: 20px 25px;
-  }
-  
-  .delete-staff-btn {
-    right: 25px;
-    background-image: url('../utils/delete_button.png');
-  }
-  
-  .graph-staff-btn-general {
-    right: 80px;
-    background-image: url('../utils/graph_button_white.png');
-    background-size: 25px 25px;
-    background-position: center; /* Center the background image */
-    background-repeat: no-repeat; /* Prevent the image from repeating */
-  }
-  
-  .delete-staff-btn:hover,
-  .graph-staff-btn-general:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-    border-color: #ffffff;
-  }
-  
-  .team-table td {
-    position: relative; /* Make the cell a positioning context */
-  }
-  
-  .delete-staff-round-btn {
-    position: absolute; /* Position the button absolutely within the cell */
-    right: 10px; /* Adjust the distance from the right edge */
-    top: 50%; /* Center the button vertically */
-    transform: translateY(-50%); /* Adjust for vertical centering */
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: #ff0000;
-    color: white;
-    border: none;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
-    vertical-align: middle;
-  }
-  
-  .delete-staff-round-btn:hover {
-    background-color: #ce0404;
-    transform: scale(1.1) translateY(-50%); /* Maintain vertical centering on hover */
-  }
-
-  .graph-staff-btn-small {
-    position: absolute; /* Position the button absolutely within the cell */
-    right: 10px; /* Adjust the distance from the right edge */
-    top: 50%; /* Center the button vertically */
-    transform: translateY(-50%); /* Adjust for vertical centering */
-    width: 30px; /* Adjust width as needed */
-    height: 30px; /* Adjust height as needed */
-    background-image: url('../utils/graph_button_black.png'); /* Ensure the path is correct */
-    background-size: 20px 20px; /* Ensure the image covers the entire button */
-    background-position: center; /* Center the background image */
-    background-repeat: no-repeat; /* Prevent the image from repeating */
-    border: 2px solid #000; /* Add border with desired color */
-    border-radius: 8px; /* Add border radius for rounded corners */
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease; /* Transition for transform */
-    vertical-align: middle;
-  }
-  
-  .graph-staff-btn-small:hover {
-    background-color: rgba(213, 213, 213, 0.5); /* Grey transparent color */
-    transform: scale(1.1) translateY(-50%); /* Maintain vertical centering on hover */
-  }
+}

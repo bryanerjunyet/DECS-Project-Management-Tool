@@ -16,14 +16,47 @@ const SprintBacklog = () => {
     loadData();
   }, [sprintId]);
 
-  const loadData = () => {
-    const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const sprint = storedSprints.find(s => s.id === sprintId);
-    setProductBacklog(storedTasks);
-    setCurrentSprint(sprint);
-    setSprintBacklog(sprint ? sprint.tasks || [] : []);
-  };
+  const loadData = async () => {
+    try {
+      // Retrieve product backlog tasks from database
+      const response = await fetch('http://localhost:3001/product_backlog', {
+        method: 'GET'
+      });
+
+      // Sets current tasks to empty if there are no tasks
+      if (response.status === 204) {
+        setProductBacklog([]);
+      } else if (!response.ok) {
+        throw new Error('Unable to retrieve tasks from database in Product Backlog.');
+      } else {
+        const jsonData = await response.json();
+        const storedTasks = jsonData.rows;
+        setProductBacklog(storedTasks);
+      }
+    } catch (err) {
+      console.error('Error fetching product backlog:', err);
+    }
+
+    try {
+      // Retrieve product backlog tasks from database
+      const sprintRes = await fetch(`http://localhost:3001/sprints/tasks?sprint_id=${sprintId}`, {
+        method: 'GET'
+      });
+
+      // Sets current tasks to empty if there are no tasks
+      if (sprintRes.status === 204) {
+        setSprintBacklog([]);
+        return;
+      } else if (!sprintRes.ok) {
+        throw new Error('Unable to retrieve tasks from database in Product Backlog.');
+      }
+      const sprintData = await sprintRes.json();
+      const storedSprintTasks = sprintData.rows;
+      setSprintBacklog(storedSprintTasks);
+    } catch (err) {
+      console.error('Error fetching sprint backlog:', err);
+    }
+  }
 
   const handleDragStart = (e, task) => {
     e.dataTransfer.setData('text/plain', JSON.stringify(task));
@@ -33,39 +66,55 @@ const SprintBacklog = () => {
     e.preventDefault();
   };
 
-  const handleDrop = (e, targetBacklog) => {
-    e.preventDefault();
-    const task = JSON.parse(e.dataTransfer.getData('text/plain'));
-    
-    if (targetBacklog === 'sprint' && !sprintBacklog.some(t => t.id === task.id)) {
-      setSprintBacklog([...sprintBacklog, task]);
-      setProductBacklog(productBacklog.filter(t => t.id !== task.id));
-    } else if (targetBacklog === 'product' && !productBacklog.some(t => t.id === task.id)) {
-      if (currentSprint && (currentSprint.status === 'Active' || currentSprint.status === 'Completed')) {
-        alert("Cannot move tasks from an active or completed sprint.");
-        return;
-      }
-      setProductBacklog([...productBacklog, task]);
-      setSprintBacklog(sprintBacklog.filter(t => t.id !== task.id));
-    }
-  };
+  const handleProductBacklogDrop = async (e) => {
+    const droppedTask = JSON.parse(e.dataTransfer.getData('text/plain'));
 
-  const handleSave = () => {
-    if (sprintBacklog.length === 0) {
-      const updatedSprints = JSON.parse(localStorage.getItem('sprints')).filter(s => s.id !== sprintId);
-      localStorage.setItem('sprints', JSON.stringify(updatedSprints));
-      localStorage.setItem('tasks', JSON.stringify([...productBacklog, ...sprintBacklog]));
-      alert("Sprint was empty and has been deleted.");
-      navigate('/sprint-board');
-    } else {
-      const updatedSprints = JSON.parse(localStorage.getItem('sprints')).map(s => 
-        s.id === sprintId ? { ...s, tasks: sprintBacklog } : s
-      );
-      localStorage.setItem('sprints', JSON.stringify(updatedSprints));
-      localStorage.setItem('tasks', JSON.stringify(productBacklog));
-      navigate('/sprint-board');
+    if (!productBacklog.some(task => task['task_id'] === droppedTask.task_id)) {
+      try {
+        const response = await fetch(`http://localhost:3001/sprints/tasks?task_id=${droppedTask.task_id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        if (!response.ok) {
+          throw new Error(response.message);
+        }
+        loadData()
+      } catch (err) {
+        console.error('Failed to move task to product backlog:', err);
+      }
     }
-  };
+  }
+
+  const handleSprintDrop = async (e) => {
+    const droppedTask = JSON.parse(e.dataTransfer.getData('text/plain'));
+    if (!sprintBacklog.some(task => task['task_id'] === droppedTask.task_id)) {
+      try {
+        const response = await fetch('http://localhost:3001/sprints/tasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sprint_id: sprintId,
+            task_id: droppedTask.task_id
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error(response.message);
+        }
+        loadData();
+      } catch (err) {
+        console.error('Failed to assign task to sprint:', err);
+      }
+    }
+  }
+
+  const handleBack = () => {
+    navigate('/sprint-board');
+  }
 
   const handleTaskClick = (task) => {
     setSelectedTask(task);
@@ -78,8 +127,8 @@ const SprintBacklog = () => {
   return (
     <div className="sprint-backlog-page">
       <header className="page-header">
-        <h2 className="sprint-title">Sprint Backlog: {currentSprint?.name}</h2>
-        <button className="save-sprint-button" onClick={handleSave}>Save Sprint</button>
+        <h2 className="sprint-title">Sprint Backlog: {currentSprint?.sprint_name}</h2>
+        <button className="back-button" onClick={handleBack}>Back to Sprint Board</button>
       </header>
       <div className="sprint-task-selection">
         <div className="task-selection-container">
@@ -87,13 +136,14 @@ const SprintBacklog = () => {
             <h3 className="backlog-heading">Product Backlog</h3>
             <div 
               className="task-grid-container"
+              id="product_container"
               onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, 'product')}
+              onDrop={(e) => handleProductBacklogDrop(e, 'product')}
             >
-              <div className="task-grid">
+              <div className="task-grid" id="product_grid">
                 {productBacklog.map(task => (
                   <div 
-                    key={task.id}
+                    key={task.task_id}
                     draggable
                     onDragStart={(e) => handleDragStart(e, task)}
                   >
@@ -107,13 +157,14 @@ const SprintBacklog = () => {
             <h3 className="backlog-heading">Sprint Backlog</h3>
             <div 
               className="task-grid-container"
+              id="sprint_container"
               onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, 'sprint')}
+              onDrop={(e) => handleSprintDrop(e, 'sprint')}
             >
-              <div className="task-grid">
+              <div className="task-grid" id="sprint_grid">
                 {sprintBacklog.map(task => (
                   <div 
-                    key={task.id}
+                    key={task.task_id}
                     draggable
                     onDragStart={(e) => handleDragStart(e, task)}
                   >

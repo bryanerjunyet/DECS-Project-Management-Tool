@@ -153,7 +153,10 @@
 .status-completed { background-color: rgb(0, 151, 60); color: white; }
 
 /* Person styles */
-.person {
+.person-alvin,
+.person-bryan,
+.person-joey,
+.person-shelly {
   background-color: #fff986;
   color: rgb(145, 80, 0);
 }
@@ -273,9 +276,24 @@
 .sprint-task-details .history-button {
   margin-bottom: 15px; /* Add space below the History button */
 }
-.form-field input[type="text"]#manualTime {
-  width: calc(100% - 110px);
-  display: inline-block;
+
+.sprint-task-details .message {
+  background-color: #e47610;
+  color: white;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.add-time-container {
+  display: flex;
+  gap: 10px;
+}
+
+.add-time-container input {
+  flex-grow: 1;
 }
 
 .add-time-button {
@@ -287,20 +305,8 @@
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s ease;
-  margin-left: 10px;
 }
 
 .add-time-button:hover {
-  background-color: #367c3a;
-}
-
-/* Update the existing message style */
-.sprint-task-details .message {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 4px;
-  text-align: center;
-  font-weight: bold;
+  background-color: #45a049;
 }

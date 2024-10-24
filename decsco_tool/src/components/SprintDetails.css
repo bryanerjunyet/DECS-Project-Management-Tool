@@ -1,19 +1,40 @@
 /* SprintDetailsModal.css */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* Ensure this is higher than the sidebar's z-index */
+}
+
 .sprint-details-modal {
-  width: 80%;
-  max-width: 800px;
+  width: 90%;
+  height: 90%;
+  max-width: none;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 30px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 2001; /* Ensure this is higher than the modal-overlay */
 }
 
 .sprint-details-modal h2 {
   text-align: center;
-  font-size: 30px;
-  margin-bottom: 20px;
+  font-size: 36px;
+  margin-bottom: 30px;
 }
 
 .tasks-heading {
   text-align: center;
   font-size: 30px;
-  margin-top: 20px;
+  margin-top: 30px;
+  margin-bottom: 20px;
 }
 
 .sprint-details-modal p {
@@ -21,68 +42,47 @@
   font-size: 18px;
   font-weight: bold;
   font-family: 'Courier New', Courier, monospace;
-  margin-bottom: 10px;
-  border: 2px solid #000000; /* Add a solid border */
-  padding: 10px; /* Add padding inside the border */
-  border-radius: 10px; /* Ensure the border is a rectangle */
-  width: 40%; /* Set the width to 50% of the container */
-  margin-left: auto; /* Center the element horizontally */
-  margin-right: auto; /* Center the element horizontally */
-  background-color: rgb(255, 255, 255); /* Add a white transparent background */
+  margin-bottom: 15px;
+  border: 2px solid #000000;
+  padding: 12px;
+  border-radius: 10px;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgb(255, 255, 255);
 }
 
 .task-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
-.edit-sprint-link {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #ffee00;
-  color: rgb(0, 0, 0);
-  border: 2px solid #000000; /* Add a solid border */
-  font-weight: bold;
-  font-size: 15px;
-  text-decoration: none;
-  border-radius: 4px;
-  padding: 10px 20px 10px 40px; /* Increased left padding for icon */
-  background-repeat: no-repeat;
-  background-position: 10px center; /* Position icon on the left */
-  background-size: 20px 20px; /* Size of the icon */
-  background-image: url('../utils/edit_button_black.png');
-}
-
-.edit-sprint-link:hover {
-  background-color: #fcf36c;
-  border: 2px solid #ffffff; /* Add a solid border */
-  background-image: url('../utils/edit_button_white.png');
-}
-
+.edit-sprint-link,
 .edit-sprint-button {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
-  background-color: #ffee00;
-  color: rgb(0, 0, 0);
-  border: 2px solid #000000;
-  font-weight: bold;
-  font-size: 15px;
-  text-decoration: none;
+  /* Existing styles */
+  font-size: 16px;
+  padding: 12px 24px 12px 44px;
+}
+
+.modal-actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-actions button {
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #f0f0f0;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
-  padding: 10px 20px 10px 40px; /* Increased left padding for icon */
-  background-repeat: no-repeat;
-  background-position: 10px center; /* Position icon on the left */
-  background-size: 20px 20px; /* Size of the icon */
-  background-image: url('../utils/edit_button_black.png');
 }
 
-.edit-sprint-button:hover {
-  background-color: #fcf36c;
-  border: 2px solid #ffffff;
-  background-image: url('../utils/edit_button_white.png');
+.modal-actions button:hover {
+  background-color: #e0e0e0;
 }

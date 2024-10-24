@@ -7,10 +7,34 @@ const KanbanBoard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedSprints = JSON.parse(localStorage.getItem('sprints')) || [];
-    const active = storedSprints.filter(sprint => sprint.status === 'Active');
-    setActiveSprints(active);
+
+
+    fetchSprints();
   }, []);
+
+  const fetchSprints = async () => {
+    try {
+      // Retrieve active sprints from database
+      const response = await fetch('http://localhost:3001/sprints?sprintstatus_id=2', {
+        method: 'GET'
+      });
+
+      // Sets active sprints to empty if there are no active sprints
+      if (response.status === 204) {
+        setActiveSprints([]);
+        return;
+      } else if (!response.ok) {
+        throw new Error(response.message);
+      }
+      const jsonData = await response.json();
+
+      const storedSprints = jsonData.rows;
+
+      setActiveSprints(storedSprints);
+    } catch (err) {
+      console.error('Error fetching sprints:', err);
+    }
+  }
 
   const handleSprintClick = (sprintId) => {
     navigate(`/kanban-view/${sprintId}`);
@@ -18,23 +42,23 @@ const KanbanBoard = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Completed':
+      case 3:
         return '#489848'; // Green
-      case 'Active':
+      case 2:
         return '#e3c93a'; // Yellow (using orange for better visibility)
       default:
-        return '#348fb9'; // Black for any other status
+        return '#e3c93a'; // Dark gray for any other status
     }
   };
 
   return (
     <div className="kanban-board">
-      <header className="page-header">
+      <header>
         <h1>Kanban Board</h1>
       </header>
       <div className="sprint-table-container">
       {activeSprints.length === 0 ? (
-        <div className="no-active-sprints">No active sprint found.</div>
+        <div className="no-active-sprints">No active sprints found.</div>
       ) : (
         <table className="sprint-table">
           <thead>
@@ -47,10 +71,10 @@ const KanbanBoard = () => {
           </thead>
           <tbody>
             {activeSprints.map((sprint) => (
-              <tr key={sprint.id} onClick={() => handleSprintClick(sprint.id)}>
-                <td>{sprint.name}</td>
-                <td>{sprint.startDate}</td>
-                <td>{sprint.endDate}</td>
+              <tr key={sprint.sprint_id} onClick={() => handleSprintClick(sprint.sprint_id)}>
+                <td>{sprint.sprint_name}</td>
+                <td>{sprint.display_start_date}</td>
+                <td>{sprint.display_end_date}</td>
                 <td style={{ 
                   backgroundColor: getStatusColor(sprint.status), 
                   color: 'white', 
@@ -58,7 +82,7 @@ const KanbanBoard = () => {
                   padding: '8px',
                   borderRadius: '4px'
                 }}>
-                  {sprint.status}
+                  {sprint.status_name}
                 </td>
               </tr>
             ))}

@@ -6,11 +6,52 @@
   .kanban-board h1 {
     margin-bottom: 3px;
   }
+
+  .sprint-table-container {
+    position: relative;
+    margin-top: 20px;
+    margin-left: 30px;
+  }
+
+  .sprint-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+  
+  .sprint-table th,
+  .sprint-table td {
+    border: 1px solid white;
+    padding: 15px;
+    text-align: left;
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .sprint-table th {
+    background: white;
+    color: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .sprint-table tbody tr {
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .sprint-table tbody tr:hover {
+    background: white;
+    color: black;
+  }
   
   .no-active-sprints {
-    font-size: 30px;
-    font-weight: bold;
-    color: white;
+    font-size: 18px;
     text-align: center;
     margin-top: 50px;
   }

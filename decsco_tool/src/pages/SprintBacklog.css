@@ -22,8 +22,6 @@
 .task-selection-container {
   display: flex;
   justify-content: space-between;
-  margin-left: 10px;
-  margin-right: 10px;
   margin-bottom: 20px;
   height: calc(100vh - 200px); /* Adjust this value based on your layout */
 }
@@ -64,9 +62,9 @@
   gap: 20px;
 }
 
-.save-sprint-button {
+.back-button {
   padding: 10px 20px;
-  background-color: #ff0000;
+  background-color: #444141;
   color: white;
   font-weight: bold;
   border: none;

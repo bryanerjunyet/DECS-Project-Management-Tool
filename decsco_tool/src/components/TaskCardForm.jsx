@@ -1,24 +1,138 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PICSelection } from './PICManagement';
 import Choices from 'choices.js';
 import 'choices.js/public/assets/styles/choices.min.css';
 import './TaskCardForm.css';
 
 const TaskCardForm = ({ onSubmit, onCancel }) => {
   const [task, setTask] = useState({
-    name: '',
-    tags: [],
+    task_name: '',
+    task_tags: [],
     description: '',
-    personInCharge: '',
-    priority: 'LOW',
-    storyPoint: 1,
-    typeOfTask: 'Story',
-    stageOfTask: 'PLANNING',
-    taskStatus: 'TO DO',
+    user_token: '',
+    user_name: '',
+    taskpriority_id: '1',
+    story_point: '1',
+    tasktype_id: '1',
+    taskstage_id: '1',
+    taskstatus_id: '1',
   });
+
+  const [availableTags, setAvailableTags] = useState([]);
+  const [availablePriorities, setAvailablePriorities] = useState([]);
+  const [availableTypes, setAvailableTypes] = useState([]);
+  const [availableStages, setAvailableStages] = useState([]);
+  const [availableStatuses, setAvailableStatuses] = useState([]);
+  const [availableUsers, setAvailableUsers] = useState([]);
 
   // Ref for the tags select element
   const tagsRef = useRef(null);
+
+  // Fetch available task options from the database
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        // Fetches tag data from database
+        const response = await fetch('http://localhost:3001/tasks/tag_lookup');
+        if (!response.ok) {
+          throw new Error(response.message);
+        }
+
+        const jsonData = await response.json();
+        if (jsonData.rows) {
+          setAvailableTags(jsonData.rows); // Store fetched tags
+        }
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+      }
+    };
+    const fetchPriority = async () => {
+      try {
+        // Fetches priority data from database
+        const response = await fetch('http://localhost:3001/tasks/priority_lookup');
+        if (!response.ok) {
+          throw new Error(response.message);
+        }
+
+        const jsonData = await response.json();
+        if (jsonData.rows) {
+          setAvailablePriorities(jsonData.rows); // Store fetched priorities
+        }
+      } catch (error) {
+        console.error('Error fetching priorities:', error);
+      }
+    };
+    const fetchType = async () => {
+      try {
+        // Fetches type data from database
+        const response = await fetch('http://localhost:3001/tasks/type_lookup');
+        if (!response.ok) {
+          throw new Error(response.message);
+        }
+
+        const jsonData = await response.json();
+        if (jsonData.rows) {
+          setAvailableTypes(jsonData.rows); // Store fetched types
+        }
+      } catch (error) {
+        console.error('Error fetching types:', error);
+      }
+    };
+    const fetchStage = async () => {
+      try {
+        // Fetches stage data from database
+        const response = await fetch('http://localhost:3001/tasks/stage_lookup');
+        if (!response.ok) {
+          throw new Error(response.message);
+        }
+
+        const jsonData = await response.json();
+        if (jsonData.rows) {
+          setAvailableStages(jsonData.rows); // Store fetched stages
+        }
+      } catch (error) {
+        console.error('Error fetching stages:', error);
+      }
+    };
+    const fetchStatus = async () => {
+      try {
+        // Fetches status data from database
+        const response = await fetch('http://localhost:3001/tasks/status_lookup');
+        if (!response.ok) {
+          throw new Error(response.message);
+        }
+
+        const jsonData = await response.json();
+        if (jsonData.rows) {
+          setAvailableStatuses(jsonData.rows); // Store fetched statuses
+        }
+      } catch (error) {
+        console.error('Error fetching statuses:', error);
+      }
+    };
+
+    const fetchUser = async () => {
+      try {
+        // Fetches user data from database
+        const response = await fetch('http://localhost:3001/users');
+        if (!response.ok) {
+          throw new Error(response.message);
+        }
+
+        const jsonData = await response.json();
+        if (jsonData.rows) {
+          setAvailableUsers(jsonData.rows); // Store fetched users
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+    fetchTags();
+    fetchPriority();
+    fetchType();
+    fetchStage();
+    fetchStatus();
+    fetchUser();
+  }, []);
 
   // Initialize Choices.js on the tags select field
   useEffect(() => {
@@ -35,7 +149,7 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
       // Sync choices with React state
       tagsRef.current.addEventListener('change', function () {
         const selectedTags = choices.getValue(true); // Get values of the selected tags
-        setTask((prevTask) => ({ ...prevTask, tags: selectedTags }));
+        setTask((prevTask) => ({ ...prevTask, task_tags: selectedTags }));
       });
 
       // Cleanup Choices.js instance on component unmount
@@ -43,16 +157,63 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
         choices.destroy();
       };
     }
-  }, []);
+  }, [availableTags]);
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case '1': return '#2196F3'; // TO DO (Blue)
+      case '2': return '#FFA500'; // IN PROGRESS (Orange)
+      case '3': return '#4CAF50'; // COMPLETED (Green)
+      default: return '#000000';
+    }
+  };
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case '1': return '#4CAF50'; // LOW (Green)
+      case '2': return '#2196F3'; // MEDIUM (Blue)
+      case '3': return '#e9b759'; // HIGH (Peach)
+      case '4': return '#FF0000'; // URGENT (Red)
+      default: return '#000000';
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTask((prevTask) => ({ ...prevTask, [name]: value }));
+    if (name === 'taskstatus_id') {
+      e.target.style.backgroundColor = getStatusColor(value);
+      e.target.style.color = 'white';
+    }
+    if (name === 'taskpriority_id') {
+      e.target.style.backgroundColor = getPriorityColor(value);
+      e.target.style.color = 'white';
+    }
+  };
+
+  const handleUserChange = (e) => {
+    const userToken = e.target.value; // Get the selected user ID
+    const selectedUser = availableUsers.find(user => user.user_id === userToken); // Find the selected user
+  
+    setTask((prevTask) => ({
+      ...prevTask,
+      user_token: userToken,
+      user_name: selectedUser ? selectedUser.user_name : ''
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ ...task, id: Date.now() });
+    onSubmit({ ...task,
+      id: Date.now(),
+      user_token: task.user_token === '' ? null : task.user_token,
+      taskpriority_id: parseInt(task.taskpriority_id, 10),
+      story_point: parseInt(task.story_point, 10),
+      tasktype_id: parseInt(task.tasktype_id, 10),
+      taskstage_id: parseInt(task.taskstage_id, 10),
+      taskstatus_id: parseInt(task.taskstatus_id, 10),
+      task_tags: task.task_tags.map(tag => parseInt(tag, 10))
+    });
   };
 
   return (
@@ -65,8 +226,8 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
           <input
             type="text"
             id="name"
-            name="name"
-            value={task.name}
+            name="task_name"
+            value={task.task_name}
             onChange={handleChange}
             required
           />
@@ -76,17 +237,14 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
           <label htmlFor="tags">Tags:</label>
           <select
             id="tags"
-            name="tags"
+            name="task_tags"
             ref={tagsRef}
             className="choices-multiple"
             multiple={true} // Set this to true to allow multiple selections
           >
-            <option value="Frontend">FRONTEND</option>
-            <option value="UI/UX">UI/UX</option>
-            <option value="Backend">BACKEND</option>
-            <option value="Database">DATABASE</option>
-            <option value="Testing">TESTING</option>
-            <option value="API">API</option>
+            {availableTags.map(tag => (
+              <option key={tag.tasktag_id} value={tag.tasktag_id}>{tag.tag_name}</option>
+            ))}
           </select>
         </div>
 
@@ -102,28 +260,35 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
 
         <div className="form-field">
           <label htmlFor="personInCharge">Person in Charge:</label>
-            <PICSelection
-              id="personInCharge"
-              name="personInCharge"
-              value={task.personInCharge}
-              onChange={handleChange}
-              className="person"
-            />
+          <select
+            id="personInCharge"
+            name="user_token"
+            value={task.user_token}
+            onChange={handleUserChange}
+            className={`person-${task.user_name.toLowerCase()}`}
+          >
+            <option value={""}>None</option>
+            {availableUsers.map(user => (
+              <option key={user.user_id} value={user.user_id}>{user.user_name}</option>
+            ))}
+          </select>
         </div>
 
         <div className="form-field">
           <label htmlFor="priority">Priority:</label>
           <select
             id="priority"
-            name="priority"
-            value={task.priority}
+            name="taskpriority_id"
+            value={task.taskpriority_id}
             onChange={handleChange}
-            className={`priority-${task.priority.toLowerCase()}`}
+            style={{
+              backgroundColor: getPriorityColor(task.taskpriority_id),
+              color: 'white'
+            }}
           >
-            <option value="LOW">LOW</option>
-            <option value="MEDIUM">MEDIUM</option>
-            <option value="HIGH">HIGH</option>
-            <option value="URGENT">URGENT</option>
+            {availablePriorities.map(priority => (
+              <option key={priority.taskpriority_id} value={priority.taskpriority_id}>{priority.priority_name}</option>
+            ))}
           </select>
         </div>
 
@@ -132,10 +297,10 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
           <input
             type="range"
             id="storyPoint"
-            name="storyPoint"
+            name="story_point"
             min="1"
             max="10"
-            value={task.storyPoint}
+            value={task.story_point}
             onChange={handleChange}
             className="slider"
           />
@@ -149,26 +314,18 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
         <div className="form-field">
           <label>Type of Task:</label>
           <div className="type-of-task">
-            <label>
-              <input
-                type="radio"
-                name="typeOfTask"
-                value="Story"
-                checked={task.typeOfTask === 'Story'}
-                onChange={handleChange}
-              />{' '}
-              Story
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="typeOfTask"
-                value="Bug"
-                checked={task.typeOfTask === 'Bug'}
-                onChange={handleChange}
-              />{' '}
-              Bug
-            </label>
+            {availableTypes.map((type) => (
+              <label key={type.tasktype_id}>
+                <input
+                  type="radio"
+                  name="tasktype_id"
+                  value={type.tasktype_id}
+                  checked={task.tasktype_id === type.tasktype_id.toString()}
+                  onChange={handleChange}
+                />{' '}
+                {type.type_name}
+              </label>
+            ))}
           </div>
         </div>
 
@@ -176,15 +333,14 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
           <label htmlFor="stageOfTask">Stage of Task:</label>
           <select
             id="stageOfTask"
-            name="stageOfTask"
-            value={task.stageOfTask}
+            name="taskstage_id"
+            value={task.taskstage_id}
             onChange={handleChange}
-            className={`stage-${task.stageOfTask.toLowerCase()}`}
+            className={`stage-${task.taskstage_id}`}
           >
-            <option value="PLANNING">PLANNING</option>
-            <option value="DEVELOPMENT">DEVELOPMENT</option>
-            <option value="TESTING">TESTING</option>
-            <option value="INTEGRATION">INTEGRATION</option>
+            {availableStages.map(stage => (
+              <option key={stage.taskstage_id} value={stage.taskstage_id}>{stage.stage_name}</option>
+            ))}
           </select>
         </div>
 
@@ -192,14 +348,17 @@ const TaskCardForm = ({ onSubmit, onCancel }) => {
           <label htmlFor="taskStatus">Task Status:</label>
           <select
             id="taskStatus"
-            name="taskStatus"
-            value={task.taskStatus}
+            name="taskstatus_id"
+            value={task.taskstatus_id}
             onChange={handleChange}
-            className={`status-${task.taskStatus.toLowerCase().replace(' ', '')}`}
+            style={{
+              backgroundColor: getStatusColor(task.taskstatus_id),
+              color: 'white'
+            }}
           >
-            <option value="TO DO">TO DO</option>
-            <option value="IN PROGRESS">IN PROGRESS</option>
-            <option value="COMPLETED">COMPLETED</option>
+            {availableStatuses.map(status => (
+              <option key={status.taskstatus_id} value={status.taskstatus_id}>{status.status_name}</option>
+            ))}
           </select>
         </div>
 

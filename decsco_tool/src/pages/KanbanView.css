@@ -20,7 +20,6 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: stretch;
-  margin-top: 20px;
   margin-bottom: 20px;
   margin-left: 20px;
   margin-right: 20px;
@@ -45,7 +44,8 @@
   color: white;
 }
 
-.date-info {
+.sprint-info > div:nth-child(1),
+.sprint-info > div:nth-child(2) {
   background-color: #b00303;
 }
 
@@ -58,7 +58,7 @@
   color: white;
 }
 
-.status-active { 
+.status-started { 
   background-color: #e3c93a;
   color: black;
 }
@@ -99,18 +99,6 @@
   background-image: url('../utils/start_button.png');
 }
 
-.pause-sprint {
-  background-color: #FFC107;
-  color: black;
-  background-image: url('../utils/pause_button.png');
-}
-
-.resume-sprint {
-  background-color: #2196F3;
-  color: white;
-  background-image: url('../utils/resume_button.png');
-}
-
 .end-sprint {
   background-color: #F44336;
   color: white;
@@ -118,8 +106,6 @@
 }
 
 .start-sprint:hover { background-color: #38803b; }
-.pause-sprint:hover { background-color: #be8f01; }
-.resume-sprint:hover { background-color: #1869ac; }
 .end-sprint:hover { background-color: #c52c2c; }
 
 .sprint-time {
@@ -131,6 +117,12 @@
   min-width: 100px;
   text-align: center;
   color: white;
+}
+
+.kanban-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 
 .kanban-columns {
@@ -192,27 +184,50 @@
   background-color: rgba(0, 150, 136, 0.7);
 }
 
-.task-details-overlay {
-  position: fixed;
+/* New styles for completed sprint */
+.completed-sprint .kanban-container {
+  position: relative;
+}
+
+.completed-sprint .kanban-container::after {
+  content: '';
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  background-color: rgba(128, 128, 128, 0.7);
+  pointer-events: none;
+  z-index: 1;
 }
 
-.task-details-container {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  max-width: 90%;
-  max-height: 90%;
-  overflow-y: auto;
+.completed-sprint .kanban-column,
+.completed-sprint .task-list > div {
+  pointer-events: none;
+}
+
+.completed-sprint .kanban-column-title,
+.completed-sprint .task-card {
+  opacity: 0.7;
+}
+
+.completed-sprint .sprint-controls {
+  display: none;
+}
+
+.completed-sprint .sprint-status.status-completed {
+  background-color: #808080;
+}
+
+.completed-sprint .sprint-info > div {
+  background-color: #808080 !important;
+  color: #d3d3d3;
+}
+
+.completed-sprint .kanban-column-title.todo,
+.completed-sprint .kanban-column-title.inProgress,
+.completed-sprint .kanban-column-title.done {
+  background-color: #808080;
 }
 
 @media (max-width: 768px) {
@@ -242,54 +257,4 @@
   .sprint-info > div {
     flex-basis: 100%;
   }
-}
-
-.start-sprint-container {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-.start-sprint-button {
-  padding: 10px 20px;
-  font-size: 18px;
-  font-weight: bold;
-  color: white;
-  background-color: #4CAF50;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.start-sprint-button:hover {
-  background-color: #45a049;
-}
-
-.error-sprint {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background-color: #f44336; /* Red background */
-  color: rgb(255, 255, 255);
-  font-weight: bold;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000; /* Ensure it is on top of other elements */
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.error-sprint.show {
-  opacity: 1;
-}
-
-.completed-sprint .date-info,
-.completed-sprint .kanban-column-title {
-  background-color: #808080; /* Grey color */
-}
-
-.completed-sprint .kanban-column {
-  background-color: #f0f0f0; /* Light grey background */
 }
