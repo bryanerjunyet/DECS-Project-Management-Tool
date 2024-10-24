@@ -76,6 +76,14 @@ npm run dev
 ```
 The development server will start, and you can access the application in your browser at http://localhost:5173/.
 
+### 4. Login with Admin account
+To enter the system, login with our default Admin account with the details below:
+```bash
+Username: Admin
+Password: Admin12345 
+```
+You may create more accounts for your staff members in the Team Board page once you entered the system. 
+
 ## How to Run the Database server
 ### 1. Set up the PostgreSQL database
 Make sure you have **PostgreSQL** and **pgAdmin4** installed.<br/>
